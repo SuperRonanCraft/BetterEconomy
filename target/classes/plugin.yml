@@ -1,0 +1,15 @@
+name: BetterEconomy
+main: me.SuperRonanCraft.BetterEconomy.BetterEconomy
+version: '1.0'
+api-version: '1.13'
+author: SuperRonanCraft
+depend: [Vault]
+loadbefore: [Vault]
+
+commands:
+  coins:
+    description: Main economy command
+
+permissions:
+  bettereconomy.admin:
+    default: false
