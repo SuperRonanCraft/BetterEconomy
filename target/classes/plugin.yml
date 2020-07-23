@@ -4,7 +4,6 @@ version: '1.0'
 api-version: '1.13'
 author: SuperRonanCraft
 depend: [Vault]
-loadbefore: [Vault]
 
 commands:
   coins:
