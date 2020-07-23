@@ -2,8 +2,11 @@ package me.SuperRonanCraft.BetterEconomy;
 
 import me.SuperRonanCraft.BetterEconomy.events.Commands;
 import me.SuperRonanCraft.BetterEconomy.events.Events;
-import me.SuperRonanCraft.BetterEconomy.resources.Files;
-import me.SuperRonanCraft.BetterEconomy.resources.Messages;
+import me.SuperRonanCraft.BetterEconomy.resources.Permissions;
+import me.SuperRonanCraft.BetterEconomy.resources.economy.EconomyImplementer;
+import me.SuperRonanCraft.BetterEconomy.resources.files.Files;
+import me.SuperRonanCraft.BetterEconomy.resources.files.lang.Messages;
+import me.SuperRonanCraft.BetterEconomy.resources.economy.VaultHook;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -15,7 +18,7 @@ import java.util.UUID;
 public class BetterEconomy extends JavaPlugin {
 
     public HashMap<UUID, Double> playerBank = new HashMap<>();
-    public EconomyImplementer economyImplementater = new EconomyImplementer();
+    public EconomyImplementer economyImplementer = new EconomyImplementer();
     //Privates
     private static BetterEconomy instance;
     private final VaultHook vaultHook = new VaultHook();
@@ -23,13 +26,22 @@ public class BetterEconomy extends JavaPlugin {
     private final Commands commands = new Commands();
     private final Files files = new Files();
     private final Messages messages = new Messages();
+    private final Permissions perms = new Permissions();
 
     @Override
     public void onEnable() {
         instance = this;
+        load(false);
+    }
+
+    public void load(boolean reload) {
+        if (reload) {
+            vaultHook.unhook();
+        }
         vaultHook.hook(); //Economy Start
         events.load(); //Event listener
         files.loadAll(); //Load Files
+        perms.register();
     }
 
     @Override
@@ -38,14 +50,14 @@ public class BetterEconomy extends JavaPlugin {
     }
 
     @Override
-    public boolean onCommand(CommandSender sendi, Command command, String label, String[] args) {
-        commands.onCommand(sendi, command, label, args);
+    public boolean onCommand(CommandSender sendi, Command cmd, String label, String[] args) {
+        commands.onCommand(sendi, cmd, label, args);
         return false;
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        return null;
+    public List<String> onTabComplete(CommandSender sendi, Command cmd, String alias, String[] args) {
+        return commands.onTab(sendi, args);
     }
 
     public static BetterEconomy getInstance() {
@@ -58,5 +70,9 @@ public class BetterEconomy extends JavaPlugin {
 
     public Messages getMessages() {
         return messages;
+    }
+
+    public Permissions getPerms() {
+        return perms;
     }
 }

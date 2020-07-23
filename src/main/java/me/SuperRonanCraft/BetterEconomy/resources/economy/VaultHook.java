@@ -1,5 +1,6 @@
-package me.SuperRonanCraft.BetterEconomy;
+package me.SuperRonanCraft.BetterEconomy.resources.economy;
 
+import me.SuperRonanCraft.BetterEconomy.BetterEconomy;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -10,7 +11,7 @@ public class VaultHook {
     private Economy provider;
 
     public void hook() {
-        provider = getPl().economyImplementater;
+        provider = getPl().economyImplementer;
         Bukkit.getServicesManager().register(Economy.class, this.provider, getPl(), ServicePriority.Normal);
         Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "VaultAPI hooked into " + ChatColor.AQUA + getPl().getName());
     }

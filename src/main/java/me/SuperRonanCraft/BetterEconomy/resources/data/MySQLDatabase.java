@@ -4,16 +4,16 @@ import me.SuperRonanCraft.BetterEconomy.BetterEconomy;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
-import me.SuperRonanCraft.BetterEconomy.resources.FileBasics.FILETYPE;
+import me.SuperRonanCraft.BetterEconomy.resources.files.FileBasics.FILETYPE;
 
 import java.sql.*;
-import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 
 public class MySQLDatabase {
     private Database db;
     //MySQL Config
-    private String host, database, username, password, table;
+    private String host, database, username, password, table, server;
     private int port;
     private boolean debug;
     private BukkitScheduler mysqlTimer;
@@ -31,13 +31,14 @@ public class MySQLDatabase {
     }
 
     private void setup(FILETYPE sql) {
-        String pre = "MySQL.";
+        String pre = "Database.MySQL.";
         host = sql.getString(pre + "host");
         port = sql.getInt(pre + "port");
         database = sql.getString(pre + "database");
         username = sql.getString(pre + "username");
         password = sql.getString(pre + "password");
         table = sql.getString(pre + "tablePrefix") + "data";
+        server = sql.getString("Database.Server");
     }
 
     void downloadTickets() {
@@ -59,69 +60,16 @@ public class MySQLDatabase {
         try {
             debug("Attemting to setup MySQL database...");
             if (stmt != null) {
-                stmt.executeUpdate("CREATE TABLE IF NOT EXISTS " + table + "(" + db.ticketID + " INT, " + db.uuid +
-                        " VARCHAR(36), " + db.open + " BOOLEAN DEFAULT true, " + db.broadcast + " BOOLEAN " +
-                        "DEFAULT false, " + db.x + " INT, " + db.y + " INT, " + db.z + " INT, " + db.world + " TEXT, "
-                        + db.msg + " TEXT, " + db.reply + " TEXT, " + db.replier + " TEXT, " + db.resolved + " TEXT, "
-                        + "PRIMARY" + " KEY (" + db.ticketID + "))");
-                stmt.executeUpdate("CREATE TABLE IF NOT EXISTS " + nextid + "(" + db.nextTicketID + " INT " +
-                        "DEFAULT 0, PRIMARY KEY (" + db.nextTicketID + "))");
-                // NEW COLUMN "Flagged"
+                stmt.executeUpdate("CREATE TABLE IF NOT EXISTS " + table +
+                        " (" + db.uuid + " VARCHAR(36), " +
+                        db.balance + " DOUBLE, " +
+                        "PRIMARY" + " KEY (" + db.uuid + "))");
+                /*// NEW COLUMN "Flagged"
                 try {
                     stmt.executeQuery("SELECT " + db.flagged + " FROM " + table);
                 } catch (SQLException ex) {
                     stmt.executeUpdate("ALTER TABLE " + table + " ADD " + db.flagged + " BOOLEAN NOT NULL DEFAULT " + "false");
-                }
-                // NEW COLUMN "Importance"
-                try {
-                    stmt.executeQuery("SELECT " + db.importance + " FROM " + table);
-                } catch (SQLException ex) {
-                    stmt.executeUpdate("ALTER TABLE " + table + " ADD " + db.importance + " INT NOT NULL DEFAULT 0");
-                }
-                // NEW COLUMN "Rating"
-                try {
-                    stmt.executeQuery("SELECT " + db.rating + " FROM " + table);
-                } catch (SQLException ex) {
-                    stmt.executeUpdate("ALTER TABLE " + table + " ADD " + db.rating + " INT NOT NULL DEFAULT 0");
-                }
-                // NEW COLUMN "Category"
-                try {
-                    stmt.executeQuery("SELECT " + db.category + " FROM " + table);
-                } catch (SQLException ex) {
-                    stmt.executeUpdate("ALTER TABLE " + table + " ADD " + db.category + " TEXT DEFAULT NULL");
-                }
-                // NEW COLUMN "Time"
-                try {
-                    stmt.executeQuery("SELECT " + db.time + " FROM " + table);
-                    try {
-                        stmt.executeUpdate("ALTER TABLE " + table + " MODIFY COLUMN " + db.time + " TIMESTAMP " +
-                                "DEFAULT" + " CURRENT_TIMESTAMP");
-                    } catch (SQLException ex) {
-                        stmt.executeUpdate("ALTER TABLE " + table + " DROP COLUMN " + db.time);
-                        stmt.executeUpdate("ALTER TABLE " + table + " ADD " + db.time + " TIMESTAMP DEFAULT " +
-                                "CURRENT_TIMESTAMP");
-                    }
-                } catch (SQLException ex) {
-                    stmt.executeUpdate("ALTER TABLE " + table + " ADD " + db.time + " TIMESTAMP DEFAULT " +
-                            "CURRENT_TIMESTAMP");
-                }
-                // NEW COLUMN "ClaimedBy"
-                try {
-                    stmt.executeQuery("SELECT " + db.claimedBy + " FROM " + table);
-                } catch (SQLException ex) {
-                    stmt.executeUpdate("ALTER TABLE " + table + " ADD " + db.claimedBy + " TEXT DEFAULT NULL");
-                }
-                // NEW COLUMN "Server"
-                try {
-                    stmt.executeQuery("SELECT " + db.server + " FROM " + table);
-                } catch (SQLException ex) {
-                    stmt.executeUpdate("ALTER TABLE " + table + " ADD " + db.server + " TEXT DEFAULT NULL");
-                }
-                //Setup counter
-                ResultSet result = stmt.executeQuery("SELECT " + db.nextTicketID + " FROM " + nextid);
-                if (!result.next())
-                    stmt.executeUpdate("INSERT INTO " + nextid + " (" + db.nextTicketID + ") VALUES (0) ON " +
-                            "DUPLICATE KEY UPDATE " + db.nextTicketID + " = 0;");
+                }*/
                 //stmt.close();
                 debug("MySQL database has been setup!");
             }
@@ -142,57 +90,11 @@ public class MySQLDatabase {
                     Statement stmt = getStatement(true);
                     if (stmt != null) {
                         setupSql(stmt);
-                        ResultSet result = stmt.executeQuery("SELECT * FROM " + table); //Get the result list and
-                        // cache it
+                        ResultSet result = stmt.executeQuery("SELECT * FROM " + table); //Get the result list and cache it
                         while (result.next()) {
-                            String TicketID = result.getString(db.ticketID);
-                            db.TicketIDs.add(TicketID);
-                            db.UUIDs.put(TicketID, result.getString(db.uuid));
-                            db.Open.put(TicketID, result.getBoolean(db.open));
-                            db.Broadcast.put(TicketID, result.getBoolean(db.broadcast));
-                            db.World.put(TicketID, result.getString(db.world));
-                            db.X.put(TicketID, result.getInt(db.x));
-                            db.Y.put(TicketID, result.getInt(db.y));
-                            db.Z.put(TicketID, result.getInt(db.z));
-                            db.Msg.put(TicketID, result.getString(db.msg));
-                            db.Flagged.put(TicketID, result.getBoolean(db.flagged));
-                            db.Importance.put(TicketID, result.getInt(db.importance));
-                            db.Rating.put(TicketID, result.getInt(db.rating));
-                            try {
-                                db.Server.put(TicketID, result.getString(db.server));
-                            } catch (NullPointerException e) {
-                                // Server.put(TicketID, null);
-                            }
-                            try {
-                                db.Reply.put(TicketID, result.getString(db.reply).split(db.seperator));
-                            } catch (NullPointerException e) {
-                                // Reply.put(TicketID, null);
-                            }
-                            try {
-                                db.Time.put(TicketID, result.getTimestamp(db.time).toString());
-                            } catch (NullPointerException e) {
-                                // Time.put(TicketID, null);
-                            }
-                            try {
-                                db.Replier.put(TicketID, result.getString(db.replier).split(db.seperator));
-                            } catch (NullPointerException e) {
-                                // Replier.put(TicketID, null);
-                            }
-                            try {
-                                db.Resolved.put(TicketID, result.getString(db.resolved));
-                            } catch (NullPointerException e) {
-                                // Resolved.put(TicketID, null);
-                            }
-                            try {
-                                db.Category.put(TicketID, result.getString(db.category));
-                            } catch (NullPointerException e) {
-                                // Category.put(TicketID, null);
-                            }
-                            try {
-                                db.ClaimedBy.put(TicketID, result.getString(db.claimedBy));
-                            } catch (NullPointerException e) {
-                                // ClaimedBy.put(TicketID, null);
-                            }
+                            UUID id = UUID.fromString(result.getString(db.uuid));
+                            db.UUIDs.put(id, result.getString(db.uuid));
+                            db.Balance.put(id, result.getDouble(db.balance));
                         }
                         stmt.close();
                         debug("MySQL database has been downloaded!");
@@ -205,22 +107,18 @@ public class MySQLDatabase {
     }
 
 
-    void create(String ticket, int posx, int posy, int posz, String worl, String playerid, String msgs, String cat,
-                int impor, String time) {
-        executeUpdate("INSERT INTO " + table + " (" + db.ticketID + ", " + db.uuid + ", " + db.x + ", " + db.y + ", " +
-                db.z + ", " + db.world + ", " + db.msg + ", " + db.category + ", " + db.importance + ", " + db.server + ", " + db.time + " ) " +
-                "VALUES" + " (" + ticket + ", '" + playerid + "', " + posx + ", " + posy + ", " + posz + ", '" + worl + "', '" +
-                msgs + "', '" + cat + "', " + impor + ", NULLIF('" + getPl().getSystems().getSettings().getServerName() +
-                "', '" + null + "'), '" + time + "' );");
+    void newPlayer(UUID id) {
+        executeUpdate("INSERT INTO " + table + " (" + db.uuid + ", " + db.balance + ", " + db.server + ") " +
+                "VALUES" + " ('" + id.toString() + "', " + 0 + "', '" + this.server + "');");
+
     }
 
 
 
     //RESOURCES
-    private Connection openConnections(boolean debug) throws SQLException, ClassNotFoundException {
+    private Connection openConnections() throws SQLException, ClassNotFoundException {
         synchronized (this) {
-            if (debug)
-                debug("Connecting to MySQL database...");
+            debug("Connecting to MySQL database...");
             Class.forName("com.mysql.jdbc.Driver");
             return DriverManager.getConnection("jdbc:mysql://" + this.host + ":" + this.port + "/" + this.database +
                     "?autoReconnect=true&useSSL=false", this.username, this.password);
@@ -229,18 +127,18 @@ public class MySQLDatabase {
 
     private Statement getStatement(boolean debug) {
         try {
-            return openConnections(debug).createStatement();
+            return openConnections().createStatement();
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
             debug("Connection to MySQL database failed!");
             if (mysqlTimer != null) {
                 mysqlTimer.cancelTasks(getPl());
-                getPl().getText().getLang().getCore().sms(Bukkit.getConsoleSender(),
+                getPl().getMessages().sms(Bukkit.getConsoleSender(),
                         "%prefix%&cFailed to " + "bind " + "to " + "MySQLDatabase " + "database! Make sure " + "your "
                                 + "information is correct! " + "&fDatabase" + " " + "switched to " + "yml file! " +
                                 "&eCanceling MySQLDatabase " + "Timer!");
             } else
-                getPl().getText().getLang().getCore().sms(Bukkit.getConsoleSender(),
+                getPl().getMessages().sms(Bukkit.getConsoleSender(),
                         "%prefix%&cFailed to " + "bind " + "to " + "MySQLDatabase " + "database! Make sure " + "your "
                                 + "information is correct! " + "&fDatabase" + " " + "switched to " + "yml file!");
             db.sqlEnabled = false;
@@ -258,8 +156,7 @@ public class MySQLDatabase {
                     if (stmt != null) {
                         stmt.executeUpdate(sql);
                         stmt.close();
-                        if (debug)
-                            debug("MySQL connected and updated successfully!");
+                        debug("MySQL connected and updated successfully!");
                     }
                 } catch (SQLException e) {
                     e.printStackTrace();
@@ -279,8 +176,7 @@ public class MySQLDatabase {
                         for (String str : ary)
                             stmt.executeUpdate(str);
                         stmt.close();
-                        if (debug)
-                            debug("MySQL connected and updated successfully!");
+                        debug("MySQL connected and updated successfully!");
                     }
                 } catch (SQLException e) {
                     e.printStackTrace();

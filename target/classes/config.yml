@@ -1,5 +1,15 @@
 Language-File: 'en.yml'
+Debug: false
 Format:
   Symbol: '$'
   Single: 'Coin'
   Plural: 'Coins'
+Database:
+  Name: 'Lobby'
+  MySQL:
+    host: 'localhost'
+    port: 3306
+    database: 'root'
+    username: 'root'
+    tablePrefix: 'BE_'
+    password: 'password'

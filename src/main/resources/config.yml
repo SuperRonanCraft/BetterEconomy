@@ -11,4 +11,5 @@ Database:
     port: 3306
     database: 'root'
     username: 'root'
+    tablePrefix: 'BE_'
     password: 'password'

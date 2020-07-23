@@ -1,10 +1,10 @@
-package me.SuperRonanCraft.BetterEconomy.resources;
+package me.SuperRonanCraft.BetterEconomy.resources.files;
 
 public class Files {
     private FileLangs fileLangs = new FileLangs(); //Lang files like lang/en.yml
     private FileBasics fileBasics = new FileBasics(); //Basic files like config.yml
 
-    FileLangs getLang() {
+    public FileLangs getLang() {
         return fileLangs;
     }
 

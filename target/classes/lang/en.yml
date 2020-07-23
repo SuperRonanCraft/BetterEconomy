@@ -1,3 +1,20 @@
 Messages:
   Prefix: '&7[&6BetterEconomy&7] '
-  Balance: '&7You have &e{0} &7in your account'
+  Balance: '%prefix% &7You have &e{0} &7in your account'
+  Set: '%prefix% &Set balance to &e{0} &7for &6{1}''s &7account!'
+  Remove: '%prefix% &7Removed &e{0} &7from &6{1}''s &7account!'
+  Add: '%prefix% &7Added &e{0} &7for &6{1}''s &7account!'
+  Reload: '%prefix% &eReloaded config and messages!'
+
+Help:
+  Prefix: '&e&m-----&6 BetterEconomy &e&m-----'
+  Balance: ' &7- &e/{0} &7- View your current balance'
+  Set: ' &7- &e/{0} set <player> <amount> &7- View your current balance'
+  Remove: ' &7- &e/{0} remove <player> <amount> &7- View your current balance'
+  Add: ' &7- &e/{0} add <player> <amount> &7- View your current balance'
+  Reload: ' &7- &e/{0} reload &7- Reload config and messages'
+
+Usage:
+  Set: '&cUsage: &7/{0} set <player> <amount>'
+  Remove: '&cUsage: &7/{0} remove <player> <amount>'
+  Add: '&cUsage: &7/{0} add <player> <amount>'

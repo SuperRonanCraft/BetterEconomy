@@ -1,11 +1,7 @@
 package me.SuperRonanCraft.BetterEconomy.resources.data;
 
-import java.sql.Date;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import me.SuperRonanCraft.BetterEconomy.resources.FileBasics.FILETYPE;
+import java.util.UUID;
 
 public class Database {
     private MySQLDatabase sql = new MySQLDatabase(this);
@@ -15,11 +11,10 @@ public class Database {
             balance = "Balance",
             server = "Server";
     //Storage
-    HashMap<String, Integer>
+    HashMap<UUID, Double>
             Balance = new HashMap<>();
-    HashMap<String, String>
-            UUIDs = new HashMap<>(),
-            Server = new HashMap<>();
+    HashMap<UUID, String>
+            UUIDs = new HashMap<>();
     boolean sqlEnabled = true;
 
     public void load() {
@@ -45,7 +40,6 @@ public class Database {
     void resetCache() {
         UUIDs.clear();
         Balance.clear();
-        Server.clear();
     }
 
 

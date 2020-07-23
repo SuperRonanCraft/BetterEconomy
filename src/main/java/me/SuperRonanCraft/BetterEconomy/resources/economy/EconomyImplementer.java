@@ -1,5 +1,6 @@
-package me.SuperRonanCraft.BetterEconomy;
+package me.SuperRonanCraft.BetterEconomy.resources.economy;
 
+import me.SuperRonanCraft.BetterEconomy.BetterEconomy;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;

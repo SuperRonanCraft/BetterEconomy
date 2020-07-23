@@ -14,6 +14,6 @@ public class Events implements Listener {
 
     @EventHandler
     public void equals(PlayerJoinEvent e) {
-        BetterEconomy.getInstance().economyImplementater.createPlayerAccount(e.getPlayer());
+        BetterEconomy.getInstance().economyImplementer.createPlayerAccount(e.getPlayer());
     }
 }

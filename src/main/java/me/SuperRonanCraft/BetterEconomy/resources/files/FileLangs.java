@@ -1,4 +1,4 @@
-package me.SuperRonanCraft.BetterEconomy.resources;
+package me.SuperRonanCraft.BetterEconomy.resources.files;
 
 import me.SuperRonanCraft.BetterEconomy.BetterEconomy;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -12,7 +12,7 @@ import java.util.List;
 public class FileLangs {
     private YamlConfiguration config = new YamlConfiguration();
 
-    String getString(String path) {
+    public String getString(String path) {
         if (config.isString(path))
             return config.getString(path);
         return "SOMETHING WENT WRONG";

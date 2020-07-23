@@ -1,4 +1,4 @@
-package me.SuperRonanCraft.BetterEconomy.resources;
+package me.SuperRonanCraft.BetterEconomy.resources.files;
 
 import me.SuperRonanCraft.BetterEconomy.BetterEconomy;
 import org.bukkit.configuration.ConfigurationSection;
