@@ -1,0 +1,12 @@
+Messages:
+  Prefix: '&7[&6BetterEconomy&7] '
+  Balance: '&7You have &e{0} &7in your account'
+  Reload: '&eReloaded config and messages!'
+
+Help:
+  Prefix: '&e&m-----&6 BetterEconomy &e&m-----'
+  Default: ' &7- &e/%command% &7- View your current balance'
+  #Set: ''
+  #Remove: ''
+  #Add: ''
+  Reload: ' &7- &e/%command% reload &7- Reload config and messages'

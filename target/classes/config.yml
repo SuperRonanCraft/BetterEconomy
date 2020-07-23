@@ -1,0 +1,5 @@
+Language-File: 'en.yml'
+Format:
+  Symbol: '$'
+  Single: 'Coin'
+  Plural: 'Coins'

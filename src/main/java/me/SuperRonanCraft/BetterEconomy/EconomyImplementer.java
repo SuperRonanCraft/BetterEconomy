@@ -164,6 +164,9 @@ public class EconomyImplementer implements Economy {
 
     @Override
     public EconomyResponse createBank(String s, String s1) {
+        /*Player player = Bukkit.getPlayer(s);
+        UUID id = player.getUniqueId();
+        getPl().playerBank.put(id, 0.0);*/
         return null;
     }
 
@@ -224,25 +227,35 @@ public class EconomyImplementer implements Economy {
 
     @Override
     public boolean createPlayerAccount(String s) {
-        return false;
+        Player player = Bukkit.getPlayer(s);
+        UUID id = player.getUniqueId();
+        getPl().playerBank.put(id, 1.0);
+        return true;
     }
 
     @Override
     public boolean createPlayerAccount(OfflinePlayer player) {
-        return false;
+        UUID id = player.getUniqueId();
+        getPl().playerBank.put(id, 1.0);
+        return true;
     }
 
     @Override
     public boolean createPlayerAccount(String s, String s1) {
-        return false;
+        Player player = Bukkit.getPlayer(s);
+        UUID id = player.getUniqueId();
+        getPl().playerBank.put(id, 1.0);
+        return true;
     }
 
     @Override
     public boolean createPlayerAccount(OfflinePlayer player, String s) {
-        return false;
+        UUID id = player.getUniqueId();
+        getPl().playerBank.put(id, 1.0);
+        return true;
     }
     
     private BetterEconomy getPl() {
-        return BetterEconomy.getInstance;
+        return BetterEconomy.getInstance();
     }
 }

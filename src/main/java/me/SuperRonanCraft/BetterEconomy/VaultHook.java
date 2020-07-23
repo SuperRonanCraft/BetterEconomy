@@ -10,13 +10,17 @@ public class VaultHook {
     private Economy provider;
 
     public void hook() {
-        provider = BetterEconomy.getInstance.economyImplementater;
-        Bukkit.getServicesManager().register(Economy.class, this.provider, BetterEconomy.getInstance, ServicePriority.Normal);
-        Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "VaultAPI hooked into " + ChatColor.AQUA + BetterEconomy.getInstance.getName());
+        provider = getPl().economyImplementater;
+        Bukkit.getServicesManager().register(Economy.class, this.provider, getPl(), ServicePriority.Normal);
+        Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "VaultAPI hooked into " + ChatColor.AQUA + getPl().getName());
     }
 
     public void unhook() {
         Bukkit.getServicesManager().unregister(Economy.class, this.provider);
-        Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "VaultAPI unhooked from " + ChatColor.AQUA + BetterEconomy.getInstance.getName());
+        Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "VaultAPI unhooked from " + ChatColor.AQUA + getPl().getName());
+    }
+
+    private BetterEconomy getPl() {
+        return BetterEconomy.getInstance();
     }
 }
