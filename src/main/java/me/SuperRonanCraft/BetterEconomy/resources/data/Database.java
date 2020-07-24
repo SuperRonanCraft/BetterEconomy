@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public class Database {
-    private MySQLDatabase sql = new MySQLDatabase(this);
+    private final MySQLDatabase sql = new MySQLDatabase(this);
     //private FileDB fileDB = new FileDB(this);
     //Static Prefix's
     String  uuid = "UUID",

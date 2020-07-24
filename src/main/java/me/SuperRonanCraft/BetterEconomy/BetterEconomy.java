@@ -3,6 +3,7 @@ package me.SuperRonanCraft.BetterEconomy;
 import me.SuperRonanCraft.BetterEconomy.events.Commands;
 import me.SuperRonanCraft.BetterEconomy.events.Events;
 import me.SuperRonanCraft.BetterEconomy.resources.Permissions;
+import me.SuperRonanCraft.BetterEconomy.resources.data.Database;
 import me.SuperRonanCraft.BetterEconomy.resources.economy.EconomyImplementer;
 import me.SuperRonanCraft.BetterEconomy.resources.files.Files;
 import me.SuperRonanCraft.BetterEconomy.resources.files.lang.Messages;
@@ -11,6 +12,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -22,11 +24,12 @@ public class BetterEconomy extends JavaPlugin {
     //Privates
     private static BetterEconomy instance;
     private final VaultHook vaultHook = new VaultHook();
-    private Events events = new Events();
+    private final Events events = new Events();
     private final Commands commands = new Commands();
     private final Files files = new Files();
     private final Messages messages = new Messages();
     private final Permissions perms = new Permissions();
+    private final Database database = new Database();
 
     @Override
     public void onEnable() {
@@ -42,6 +45,7 @@ public class BetterEconomy extends JavaPlugin {
         events.load(); //Event listener
         files.loadAll(); //Load Files
         perms.register();
+        database.load();
     }
 
     @Override

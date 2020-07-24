@@ -1,5 +1,6 @@
 package me.SuperRonanCraft.BetterEconomy.resources.data;
 
+import com.sun.org.apache.bcel.internal.generic.NEW;
 import me.SuperRonanCraft.BetterEconomy.BetterEconomy;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -11,7 +12,7 @@ import java.util.UUID;
 import java.util.logging.Level;
 
 public class MySQLDatabase {
-    private Database db;
+    private final Database db;
     //MySQL Config
     private String host, database, username, password, table, server;
     private int port;
@@ -43,14 +44,14 @@ public class MySQLDatabase {
 
     void downloadTickets() {
         mysqlTimer = getPl().getServer().getScheduler();
-        if (FILETYPE.CONFIG.getBoolean("Timer.enabled")) {
+        /*if (FILETYPE.CONFIG.getBoolean("Timer.enabled")) {
             long timer = FILETYPE.CONFIG.getInt("Timer.time") * 1200;
             if (timer == 0)
                 timer = 6000;
             long time = timer;
             mysqlTimer.scheduleSyncRepeatingTask(getPl(), downloadSql(), time, time);
-        } else
-            mysqlTimer.runTaskAsynchronously(getPl(), downloadSql());
+        } else*/
+        mysqlTimer.runTaskAsynchronously(getPl(), downloadSql());
     }
 
     private void setupSql(Statement stmt) {
