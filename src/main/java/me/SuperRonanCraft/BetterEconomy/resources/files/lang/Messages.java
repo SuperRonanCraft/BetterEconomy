@@ -34,6 +34,14 @@ public class Messages {
         sms(sendi, getLang().getString(preM + "Reload"));
     }
 
+    public void getSuccessAdd(CommandSender sendi, String p) {
+        sms(sendi, getLang().getString(preM + "Success.Add").replace("{0}", p));
+    }
+
+    public void getFailName(CommandSender sendi, String p) {
+        sms(sendi, getLang().getString(preM + "Fail.Name").replace("{0}", p));
+    }
+
     //PROCESSING
     public void sms(CommandSender sendi, String msg) {
         if (!msg.equals(""))

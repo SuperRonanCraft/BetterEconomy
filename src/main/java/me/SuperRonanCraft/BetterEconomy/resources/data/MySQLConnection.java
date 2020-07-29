@@ -3,7 +3,6 @@ package me.SuperRonanCraft.BetterEconomy.resources.data;
 import me.SuperRonanCraft.BetterEconomy.resources.files.FileBasics.FILETYPE;
 import me.SuperRonanCraft.BetterEconomy.BetterEconomy;
 import org.bukkit.scheduler.BukkitScheduler;
-import sun.security.tools.keytool.Main;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
