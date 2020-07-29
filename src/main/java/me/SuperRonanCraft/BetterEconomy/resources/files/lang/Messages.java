@@ -34,12 +34,16 @@ public class Messages {
         sms(sendi, getLang().getString(preM + "Reload"));
     }
 
-    public void getSuccessAdd(CommandSender sendi, String p) {
-        sms(sendi, getLang().getString(preM + "Success.Add").replace("{0}", p));
+    public void getSuccessAdd(CommandSender sendi, String p, String amt) {
+        sms(sendi, getLang().getString(preM + "Success.Add").replace("{0}", amt).replace("{1}", p));
     }
 
     public void getFailName(CommandSender sendi, String p) {
         sms(sendi, getLang().getString(preM + "Fail.Name").replace("{0}", p));
+    }
+
+    public void getFailNumber(CommandSender sendi) {
+        sms(sendi, getLang().getString(preM + "Fail.Number"));
     }
 
     //PROCESSING

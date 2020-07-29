@@ -64,7 +64,7 @@ public class MySQLOLD {
             if (stmt != null) {
                 stmt.executeUpdate("CREATE TABLE IF NOT EXISTS " + table +
                         " (" + db.uuid + " VARCHAR(36), " +
-                        db.balance + " DOUBLE, " +
+                        db.serverName + " DOUBLE, " +
                         "PRIMARY" + " KEY (" + db.uuid + "))");
                 /*// NEW COLUMN "Flagged"
                 try {
@@ -96,7 +96,7 @@ public class MySQLOLD {
                         while (result.next()) {
                             UUID id = UUID.fromString(result.getString(db.uuid));
                             db.UUIDs.add(id);
-                            db.Balance.put(id, result.getDouble(db.balance));
+                            db.Balance.put(id, result.getDouble(db.serverName));
                         }
                         stmt.close();
                         debug("MySQL database has been downloaded!");
@@ -110,8 +110,8 @@ public class MySQLOLD {
 
 
     void newPlayer(UUID id) {
-        executeUpdate("INSERT INTO " + table + " (" + db.uuid + ", " + db.balance + ", " + db.server + ") " +
-                "VALUES" + " ('" + id.toString() + "', " + 0 + "', '" + this.server + "');");
+        executeUpdate("INSERT INTO " + table + " (" + db.uuid + ", " + db.serverName + ") " +
+                "VALUES" + " ('" + id.toString() + "', " + 0 + ");");
 
     }
 

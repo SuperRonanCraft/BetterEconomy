@@ -36,7 +36,6 @@ public class Events implements Listener {
     @EventHandler
     private void onLeave(PlayerQuitEvent e) {
         unloadPlayer(e.getPlayer());
-
     }
 
     public void unloadPlayer(Player p) {

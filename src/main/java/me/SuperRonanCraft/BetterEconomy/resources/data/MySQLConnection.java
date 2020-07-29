@@ -4,9 +4,7 @@ import me.SuperRonanCraft.BetterEconomy.resources.files.FileBasics.FILETYPE;
 import me.SuperRonanCraft.BetterEconomy.BetterEconomy;
 import org.bukkit.scheduler.BukkitScheduler;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class MySQLConnection {
 
@@ -30,7 +28,6 @@ public class MySQLConnection {
         password = sql.getString(pre + "password");
         table = sql.getString(pre + "tablePrefix") + "data";
         connect();
-        fix();
     }
 
     private void connect() {
@@ -49,11 +46,8 @@ public class MySQLConnection {
             }
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
+            debug("Mhh... Seems like the mysql isn't setup correctly, can you fix me in the config.yml for [BetterEconomy] <3");
         }
-    }
-
-    private void fix() {
-        
     }
 
     Connection getConnection() {

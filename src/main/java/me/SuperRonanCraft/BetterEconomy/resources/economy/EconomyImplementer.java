@@ -151,7 +151,7 @@ public class EconomyImplementer implements Economy {
     @Override
     public EconomyResponse depositPlayer(OfflinePlayer player, double amt) {
         UUID id = player.getUniqueId();
-        playerBank.put(id, playerBank.get(id) + amt);
+        playerBank.put(id, playerBank.getOrDefault(id, 0.0) + amt);
         return null;
     }
 
@@ -159,14 +159,14 @@ public class EconomyImplementer implements Economy {
     public EconomyResponse depositPlayer(String s, String s1, double amt) {
         Player player = Bukkit.getPlayer(s);
         UUID id = player.getUniqueId();
-        playerBank.put(id, playerBank.get(id) + amt);
+        playerBank.put(id, playerBank.getOrDefault(id, 0.0) + amt);
         return null;
     }
 
     @Override
     public EconomyResponse depositPlayer(OfflinePlayer player, String s, double amt) {
         UUID id = player.getUniqueId();
-        playerBank.put(id, playerBank.get(id) + amt);
+        playerBank.put(id, playerBank.getOrDefault(id, 0.0) + amt);
         return null;
     }
 

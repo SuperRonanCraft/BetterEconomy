@@ -10,6 +10,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,9 +21,7 @@ public class Database {
     private final MySQLConnection sql = new MySQLConnection();
     String serverName = "NULL";
     //Static Prefix's
-    String  uuid = "UUID",
-            balance = "Balance",
-            server = "Server";
+    String  uuid = "UUID";
     //Storage
     List<UUID> UUIDs = new ArrayList<>();
     HashMap<UUID, Double> Balance = new HashMap<>();
@@ -32,6 +31,39 @@ public class Database {
         FileBasics.FILETYPE sql = FileBasics.FILETYPE.CONFIG;
         serverName = sql.getString("Database.Server");
         this.sql.load(sql);
+        createColumns();
+    }
+
+    private void createColumns() {
+        try {
+            PreparedStatement statement = sql.getConnection()
+                    .prepareStatement("SHOW TABLES LIKE '" + sql.table + "'");
+            ResultSet result = statement.executeQuery();
+            if (result.next()) { //Check for missing columns
+                PreparedStatement columnStatement = sql.getConnection()
+                        .prepareStatement("SHOW COLUMNS FROM " + sql.table);
+                ResultSet columns = columnStatement.executeQuery();
+                List<String> cNames = new ArrayList<>();
+                while (columns.next()) {
+                    String name = columns.getString(1);
+                    cNames.add(name);
+                }
+                if (!cNames.contains(serverName)) {
+                    PreparedStatement insert = sql.getConnection()
+                            .prepareStatement("ALTER TABLE " + sql.table + " ADD " + serverName + " DOUBLE DEFAULT 0 NOT NULL");
+                    insert.executeUpdate();
+                    debug("Added missing column " + serverName);
+                } else {
+                    debug("Nothing missing, mysql is setup!");
+                }
+            } else { //Table doesn't exist, create one
+                PreparedStatement createStatement = sql.getConnection()
+                        .prepareStatement("CREATE TABLE " + sql.table + " (" + uuid + " VARCHAR(36), " + serverName + " DOUBLE DEFAULT 0 NOT NULL)");
+                createStatement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public boolean playerExists(UUID id) {
@@ -56,11 +88,10 @@ public class Database {
         try {
             if (!playerExists(id)) {
                 PreparedStatement insert = sql.getConnection()
-                        .prepareStatement("INSERT INTO " + sql.table + "(" + uuid + "," + balance + "," + server +")" +
-                                "VALUE (?,?,?)");
+                        .prepareStatement("INSERT INTO " + sql.table + "(" + uuid + "," + serverName +")" +
+                                "VALUE (?,?)");
                 insert.setString(1, id.toString());
                 insert.setDouble(2, 0);
-                insert.setString(3, server);
                 insert.executeUpdate();
                 debug("Player inserted into Database!");
                 return true;
@@ -80,7 +111,7 @@ public class Database {
             ResultSet results = statement.executeQuery();
             if (results.next()) {
                 debug("Grabbed players balance!");
-                return results.getDouble(balance);
+                return results.getDouble(serverName);
             } else {
                 debug("Could not Grab players balance?");
                 return -1.0;
@@ -94,7 +125,7 @@ public class Database {
     public void playerSetBalance(final UUID id, double amt) {
         try {
             PreparedStatement insert = sql.getConnection()
-                    .prepareStatement("UPDATE " + sql.table +  " SET " + balance + "=? " + " WHERE " + uuid + "=?");
+                    .prepareStatement("UPDATE " + sql.table +  " SET " + serverName + "=? " + " WHERE " + uuid + "=?");
             insert.setDouble(1, amt);
             insert.setString(2, id.toString());
             insert.executeUpdate();
