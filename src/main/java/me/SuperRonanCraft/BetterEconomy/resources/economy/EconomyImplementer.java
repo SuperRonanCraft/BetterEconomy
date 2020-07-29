@@ -7,10 +7,17 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
 public class EconomyImplementer implements Economy {
+
+    public HashMap<UUID, Double> playerBank = new HashMap<>();
+
+    public void load() {
+        playerBank.clear();
+    }
 
     @Override
     public boolean isEnabled() {
@@ -71,26 +78,26 @@ public class EconomyImplementer implements Economy {
     public double getBalance(String s) {
         Player player = Bukkit.getPlayer(s);
         UUID id = player.getUniqueId();
-        return getPl().playerBank.getOrDefault(id, 0.0);
+        return playerBank.getOrDefault(id, 0.0);
     }
 
     @Override
     public double getBalance(OfflinePlayer player) {
         UUID id = player.getUniqueId();
-        return getPl().playerBank.getOrDefault(id, 0.0);
+        return playerBank.getOrDefault(id, 0.0);
     }
 
     @Override
     public double getBalance(String s, String s1) {
         Player player = Bukkit.getPlayer(s);
         UUID id = player.getUniqueId();
-        return getPl().playerBank.getOrDefault(id, 0.0);
+        return playerBank.getOrDefault(id, 0.0);
     }
 
     @Override
     public double getBalance(OfflinePlayer player, String s) {
         UUID id = player.getUniqueId();
-        return getPl().playerBank.getOrDefault(id, 0.0);
+        return playerBank.getOrDefault(id, 0.0);
     }
 
     @Override
@@ -137,14 +144,14 @@ public class EconomyImplementer implements Economy {
     public EconomyResponse depositPlayer(String s, double amt) {
         Player player = Bukkit.getPlayer(s);
         UUID id = player.getUniqueId();
-        getPl().playerBank.put(id, getPl().playerBank.get(id) + amt);
+        playerBank.put(id, playerBank.get(id) + amt);
         return null;
     }
 
     @Override
     public EconomyResponse depositPlayer(OfflinePlayer player, double amt) {
         UUID id = player.getUniqueId();
-        getPl().playerBank.put(id, getPl().playerBank.get(id) + amt);
+        playerBank.put(id, playerBank.get(id) + amt);
         return null;
     }
 
@@ -152,14 +159,14 @@ public class EconomyImplementer implements Economy {
     public EconomyResponse depositPlayer(String s, String s1, double amt) {
         Player player = Bukkit.getPlayer(s);
         UUID id = player.getUniqueId();
-        getPl().playerBank.put(id, getPl().playerBank.get(id) + amt);
+        playerBank.put(id, playerBank.get(id) + amt);
         return null;
     }
 
     @Override
     public EconomyResponse depositPlayer(OfflinePlayer player, String s, double amt) {
         UUID id = player.getUniqueId();
-        getPl().playerBank.put(id, getPl().playerBank.get(id) + amt);
+        playerBank.put(id, playerBank.get(id) + amt);
         return null;
     }
 
@@ -167,7 +174,7 @@ public class EconomyImplementer implements Economy {
     public EconomyResponse createBank(String s, String s1) {
         /*Player player = Bukkit.getPlayer(s);
         UUID id = player.getUniqueId();
-        getPl().playerBank.put(id, 0.0);*/
+        playerBank.put(id, 0.0);*/
         return null;
     }
 
@@ -230,14 +237,14 @@ public class EconomyImplementer implements Economy {
     public boolean createPlayerAccount(String s) {
         Player player = Bukkit.getPlayer(s);
         UUID id = player.getUniqueId();
-        getPl().playerBank.put(id, 1.0);
+        playerBank.put(id, 1.0);
         return true;
     }
 
     @Override
     public boolean createPlayerAccount(OfflinePlayer player) {
         UUID id = player.getUniqueId();
-        getPl().playerBank.put(id, 1.0);
+        playerBank.put(id, 1.0);
         return true;
     }
 
@@ -245,14 +252,14 @@ public class EconomyImplementer implements Economy {
     public boolean createPlayerAccount(String s, String s1) {
         Player player = Bukkit.getPlayer(s);
         UUID id = player.getUniqueId();
-        getPl().playerBank.put(id, 1.0);
+        playerBank.put(id, 1.0);
         return true;
     }
 
     @Override
     public boolean createPlayerAccount(OfflinePlayer player, String s) {
         UUID id = player.getUniqueId();
-        getPl().playerBank.put(id, 1.0);
+        playerBank.put(id, 1.0);
         return true;
     }
     

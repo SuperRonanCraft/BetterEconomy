@@ -95,7 +95,7 @@ public class MySQLOLD {
                         ResultSet result = stmt.executeQuery("SELECT * FROM " + table); //Get the result list and cache it
                         while (result.next()) {
                             UUID id = UUID.fromString(result.getString(db.uuid));
-                            db.UUIDs.put(id, result.getString(db.uuid));
+                            db.UUIDs.add(id);
                             db.Balance.put(id, result.getDouble(db.balance));
                         }
                         stmt.close();

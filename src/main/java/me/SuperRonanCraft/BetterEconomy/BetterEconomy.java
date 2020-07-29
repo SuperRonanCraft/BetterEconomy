@@ -5,22 +5,20 @@ import me.SuperRonanCraft.BetterEconomy.events.Events;
 import me.SuperRonanCraft.BetterEconomy.resources.Permissions;
 import me.SuperRonanCraft.BetterEconomy.resources.data.Database;
 import me.SuperRonanCraft.BetterEconomy.resources.economy.EconomyImplementer;
+import me.SuperRonanCraft.BetterEconomy.resources.files.FileBasics;
 import me.SuperRonanCraft.BetterEconomy.resources.files.Files;
 import me.SuperRonanCraft.BetterEconomy.resources.files.lang.Messages;
 import me.SuperRonanCraft.BetterEconomy.resources.economy.VaultHook;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
 
 public class BetterEconomy extends JavaPlugin {
 
-    public HashMap<UUID, Double> playerBank = new HashMap<>();
-    public EconomyImplementer economyImplementer = new EconomyImplementer();
-    //Privates
+    private static EconomyImplementer economyImplementer = new EconomyImplementer();
     private static BetterEconomy instance;
     private final VaultHook vaultHook = new VaultHook();
     private final Events events = new Events();
@@ -29,6 +27,8 @@ public class BetterEconomy extends JavaPlugin {
     private final Messages messages = new Messages();
     private final Permissions perms = new Permissions();
     private final Database database = new Database();
+    //Settings
+    private boolean debug = false;
 
     @Override
     public void onEnable() {
@@ -37,14 +37,15 @@ public class BetterEconomy extends JavaPlugin {
     }
 
     public void load(boolean reload) {
-        if (reload) {
-            vaultHook.unhook();
-        }
-        vaultHook.hook(); //Economy Start
-        events.load(); //Event listener
         files.loadAll(); //Load Files
-        perms.register();
-        database.load();
+        debug = getFiles().getType(FileBasics.FILETYPE.CONFIG).getBoolean("Debug");
+        if (reload)
+            vaultHook.unhook();
+        vaultHook.hook(); //Economy Start
+        perms.register(); //Vault hook
+        economyImplementer.load(); //Reset cache if any
+        database.load(); //Reset cache and connect to database
+        events.load(reload); //Event Listener
     }
 
     @Override
@@ -77,5 +78,21 @@ public class BetterEconomy extends JavaPlugin {
 
     public Permissions getPerms() {
         return perms;
+    }
+
+    public Database getDatabase() {
+        return database;
+    }
+
+    public Events getEvents() {
+        return events;
+    }
+
+    public void debug(String msg) {
+        getLogger().info(msg);
+    }
+
+    public EconomyImplementer getEconomy() {
+        return economyImplementer;
     }
 }

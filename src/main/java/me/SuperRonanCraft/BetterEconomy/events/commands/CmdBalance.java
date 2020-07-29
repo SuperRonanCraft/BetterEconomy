@@ -7,7 +7,7 @@ public class CmdBalance implements EconomyCommand, EconomyCommandHelpable {
 
     @Override
     public void execute(CommandSender sendi, String label, String[] args) {
-        getPl().getMessages().getBalance(sendi, getPl().economyImplementer.getBalance((Player) sendi));
+        getPl().getMessages().getBalance(sendi, getPl().getEconomy().getBalance((Player) sendi));
     }
 
     @Override

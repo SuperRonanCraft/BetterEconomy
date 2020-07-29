@@ -5,7 +5,7 @@ Format:
   Single: 'Coin'
   Plural: 'Coins'
 Database:
-  Name: 'Lobby'
+  Server: 'Lobby'
   MySQL:
     host: 'localhost'
     port: 3306

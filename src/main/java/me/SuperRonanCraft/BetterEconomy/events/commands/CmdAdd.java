@@ -11,7 +11,7 @@ public class CmdAdd implements EconomyCommand, EconomyCommandHelpable {
         if (args.length >= 3) {
             Player p = Bukkit.getPlayer(args[1]);
             if (p != null)
-                getPl().economyImplementer.depositPlayer(p, Integer.parseInt(args[2]));
+                getPl().getEconomy().depositPlayer(p, Integer.parseInt(args[2]));
         } else
             usage(sendi, label);
     }
