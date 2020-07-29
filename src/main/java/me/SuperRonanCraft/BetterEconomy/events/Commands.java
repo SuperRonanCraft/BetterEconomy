@@ -1,7 +1,7 @@
 package me.SuperRonanCraft.BetterEconomy.events;
 
+import me.SuperRonanCraft.BetterEconomy.events.commands.EconomyCommandTypes;
 import me.SuperRonanCraft.BetterEconomy.BetterEconomy;
-import me.SuperRonanCraft.BetterEconomy.events.commands.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;

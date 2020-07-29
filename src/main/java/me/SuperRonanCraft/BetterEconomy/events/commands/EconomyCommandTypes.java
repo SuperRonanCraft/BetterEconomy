@@ -1,8 +1,5 @@
 package me.SuperRonanCraft.BetterEconomy.events.commands;
 
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-
 public enum EconomyCommandTypes {
     BALANCE(new CmdBalance()), //Keep First for `help` command
     HELP(new CmdHelp()), //Keep second for `help` command

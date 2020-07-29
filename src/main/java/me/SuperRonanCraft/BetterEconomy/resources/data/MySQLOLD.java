@@ -1,17 +1,16 @@
 package me.SuperRonanCraft.BetterEconomy.resources.data;
 
-import com.sun.org.apache.bcel.internal.generic.NEW;
+import me.SuperRonanCraft.BetterEconomy.resources.files.FileBasics;
 import me.SuperRonanCraft.BetterEconomy.BetterEconomy;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
-import me.SuperRonanCraft.BetterEconomy.resources.files.FileBasics.FILETYPE;
 
 import java.sql.*;
 import java.util.UUID;
 import java.util.logging.Level;
 
-public class MySQLDatabase {
+public class MySQLOLD {
     private final Database db;
     //MySQL Config
     private String host, database, username, password, table, server;
@@ -19,19 +18,21 @@ public class MySQLDatabase {
     private boolean debug;
     private BukkitScheduler mysqlTimer;
 
-    MySQLDatabase(Database db) {
+    private boolean enabled = true;
+
+    MySQLOLD(Database db) {
         this.db = db;
     }
 
     private BetterEconomy getPl() {return BetterEconomy.getInstance();}
 
     public void load() {
-        FILETYPE sql = FILETYPE.CONFIG;
+        FileBasics.FILETYPE sql = FileBasics.FILETYPE.CONFIG;
         debug = getPl().getFiles().getType(sql).getBoolean("Debug");
         setup(sql);
     }
 
-    private void setup(FILETYPE sql) {
+    private void setup(FileBasics.FILETYPE sql) {
         String pre = "Database.MySQL.";
         host = sql.getString(pre + "host");
         port = sql.getInt(pre + "port");
@@ -142,8 +143,7 @@ public class MySQLDatabase {
                 getPl().getMessages().sms(Bukkit.getConsoleSender(),
                         "%prefix%&cFailed to " + "bind " + "to " + "MySQLDatabase " + "database! Make sure " + "your "
                                 + "information is correct! " + "&fDatabase" + " " + "switched to " + "yml file!");
-            db.sqlEnabled = false;
-            db.downloadSql();
+            enabled = false;
         }
         return null;
     }
