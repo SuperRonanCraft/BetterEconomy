@@ -30,6 +30,10 @@ public class Database {
         resetCache();
         FileBasics.FILETYPE sql = FileBasics.FILETYPE.CONFIG;
         serverName = sql.getString("Database.Server");
+        if (serverName.equals(uuid)) {
+            serverName = "ERROR";
+            getPl().getLogger().severe("You can't name this server " + serverName + "! Please change it asap!");
+        }
         this.sql.load(sql);
         createColumns();
     }
@@ -54,12 +58,14 @@ public class Database {
                     insert.executeUpdate();
                     debug("Added missing column " + serverName);
                 } else {
-                    debug("Nothing missing, mysql is setup!");
+                    debug("Nothing missing! Mysql is setup!");
                 }
             } else { //Table doesn't exist, create one
                 PreparedStatement createStatement = sql.getConnection()
-                        .prepareStatement("CREATE TABLE " + sql.table + " (" + uuid + " VARCHAR(36), " + serverName + " DOUBLE DEFAULT 0 NOT NULL)");
+                        .prepareStatement("CREATE TABLE " + sql.table + " (" + uuid + " VARCHAR(36) PRIMARY KEY, "
+                                + serverName + " DOUBLE DEFAULT 0 NOT NULL)");
                 createStatement.executeUpdate();
+                debug("Tables created! Mysql is setup!");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -84,14 +90,14 @@ public class Database {
         return false;
     }
 
-    public boolean playerCreate(final UUID id, Player p) {
+    public boolean playerCreate(final UUID id, Player p, double def) {
         try {
             if (!playerExists(id)) {
                 PreparedStatement insert = sql.getConnection()
                         .prepareStatement("INSERT INTO " + sql.table + "(" + uuid + "," + serverName +")" +
                                 "VALUE (?,?)");
                 insert.setString(1, id.toString());
-                insert.setDouble(2, 0);
+                insert.setDouble(2, def);
                 insert.executeUpdate();
                 debug("Player inserted into Database!");
                 return true;
@@ -152,5 +158,4 @@ public class Database {
     private BetterEconomy getPl() {
         return BetterEconomy.getInstance();
     }
-
 }

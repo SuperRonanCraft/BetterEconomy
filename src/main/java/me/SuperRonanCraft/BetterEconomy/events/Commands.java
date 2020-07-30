@@ -1,7 +1,9 @@
 package me.SuperRonanCraft.BetterEconomy.events;
 
+import me.SuperRonanCraft.BetterEconomy.events.commands.EconomyCommandTabPlayers;
 import me.SuperRonanCraft.BetterEconomy.events.commands.EconomyCommandTypes;
 import me.SuperRonanCraft.BetterEconomy.BetterEconomy;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -16,7 +18,7 @@ public class Commands {
             if (!(sendi instanceof Player)) {
                 getPl().getMessages().errorConsole(label);
             } else {
-                EconomyCommandTypes.BALANCE.get().execute(sendi, label, args);
+                EconomyCommandTypes.BAL.get().execute(sendi, label, args);
             }
         } else {
             for (EconomyCommandTypes type : EconomyCommandTypes.values()) {
@@ -38,6 +40,16 @@ public class Commands {
                 if (type.name().startsWith(args[0].toUpperCase())) //Argument
                     if (type.get().hasPerm(sendi)) //Permission to run
                         list.add(type.name().toLowerCase());
+            }
+        } else if (args.length == 2) {
+            for (EconomyCommandTypes type : EconomyCommandTypes.values()) {
+                if (type.get() instanceof EconomyCommandTabPlayers)
+                    if (type.name().equalsIgnoreCase(args[0])) //Argument
+                        if (type.get().hasPerm(sendi)) { //Permission to run
+                            List<String> tabcompletes = ((EconomyCommandTabPlayers) type.get()).tabPlayers(sendi, args[1]);
+                            if (!tabcompletes.isEmpty())
+                                list.addAll(tabcompletes);
+                        }
             }
         }
         return list;

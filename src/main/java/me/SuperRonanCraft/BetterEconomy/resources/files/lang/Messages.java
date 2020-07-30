@@ -10,8 +10,8 @@ import java.util.List;
 public class Messages {
 
     private final String preM = "Messages.";
-    private MessagesHelp messagesHelp = new MessagesHelp(this);
-    private MessagesUsage messagesUsage = new MessagesUsage(this);
+    private final MessagesHelp messagesHelp = new MessagesHelp(this);
+    private final MessagesUsage messagesUsage = new MessagesUsage(this);
 
     public MessagesHelp getMessagesHelp() {
         return messagesHelp;
@@ -27,7 +27,11 @@ public class Messages {
     }
 
     public void getBalance(CommandSender sendi, Double bal) {
-        sms(sendi, getLang().getString(preM + "Balance").replace("{0}", String.valueOf(bal)));
+        sms(sendi, getLang().getString(preM + "Balance.Self").replace("{0}", String.valueOf(bal)));
+    }
+
+    public void getBalanceOther(CommandSender sendi, Double bal, String p) {
+        sms(sendi, getLang().getString(preM + "Balance.Other").replace("{1}", String.valueOf(bal)).replace("{0}", p));
     }
 
     public void getReload(CommandSender sendi) {
@@ -36,6 +40,14 @@ public class Messages {
 
     public void getSuccessAdd(CommandSender sendi, String p, String amt) {
         sms(sendi, getLang().getString(preM + "Success.Add").replace("{0}", amt).replace("{1}", p));
+    }
+
+    public void getSuccessRemove(CommandSender sendi, String p, String amt) {
+        sms(sendi, getLang().getString(preM + "Success.Remove").replace("{0}", amt).replace("{1}", p));
+    }
+
+    public void getSuccessSet(CommandSender sendi, String p, String amt) {
+        sms(sendi, getLang().getString(preM + "Success.Set").replace("{0}", amt).replace("{1}", p));
     }
 
     public void getFailName(CommandSender sendi, String p) {

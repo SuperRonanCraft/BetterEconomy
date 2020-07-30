@@ -5,8 +5,8 @@ import org.bukkit.command.CommandSender;
 
 public class Permissions {
 
-    private static String pre = "bettereconomy.";
-    private DependsPermissions perm = new DependsPermissions();
+    private final static String pre = "bettereconomy.";
+    private final DependsPermissions perm = new DependsPermissions();
 
     public void register() {
         perm.register(); //Vault registration
@@ -31,6 +31,11 @@ public class Permissions {
     //Add to a balance
     public boolean getAdd(CommandSender sendi) {
         return perm(pre + "add", sendi);
+    }
+
+    //Get balance of other
+    public boolean getBalOther(CommandSender sendi) {
+        return perm(pre + "bal.other", sendi);
     }
 
     //Remove from a balance

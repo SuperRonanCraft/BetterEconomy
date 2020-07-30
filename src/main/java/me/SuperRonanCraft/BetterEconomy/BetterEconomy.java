@@ -18,7 +18,7 @@ import java.util.List;
 
 public class BetterEconomy extends JavaPlugin {
 
-    private static EconomyImplementer economyImplementer = new EconomyImplementer();
+    private static final EconomyImplementer economyImplementer = new EconomyImplementer();
     private static BetterEconomy instance;
     private final VaultHook vaultHook = new VaultHook();
     private final Events events = new Events();
@@ -89,7 +89,8 @@ public class BetterEconomy extends JavaPlugin {
     }
 
     public void debug(String msg) {
-        getLogger().info(msg);
+        if (debug)
+            getLogger().info(msg);
     }
 
     public EconomyImplementer getEconomy() {

@@ -1,18 +1,38 @@
 package me.SuperRonanCraft.BetterEconomy.events.commands;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class CmdRemove implements EconomyCommand, EconomyCommandHelpable {
+public class CmdRemove implements EconomyCommand, EconomyCommandHelpable, EconomyCommandTabPlayers {
 
-    @Override //Coins Remove [player]
+    @Override //Coins remove [player] [amount]
     public void execute(CommandSender sendi, String label, String[] args) {
-        getPl().getMessages().getBalance(sendi, getPl().getEconomy().getBalance((Player) sendi));
+        if (args.length >= 3) {
+            String pName = args[1];
+            Player p = Bukkit.getPlayer(pName);
+            if (p != null) {
+                try {
+                    double amt = Double.parseDouble(args[2]);
+                    getPl().getEconomy().withdrawPlayer(p, amt);
+                    getPl().getMessages().getSuccessRemove(sendi, p.getName(), String.valueOf(amt));
+                } catch (NumberFormatException e) {
+                    getPl().getMessages().getFailNumber(sendi);
+                }
+            } else {
+                getPl().getMessages().getFailName(sendi, pName);
+            }
+        } else
+            usage(sendi, label);
+    }
+
+    private void usage(CommandSender sendi, String label) {
+        getPl().getMessages().getMessagesUsage().getRemove(sendi, label);
     }
 
     @Override
     public boolean hasPerm(CommandSender sendi) {
-        return true;
+        return getPl().getPerms().getRemove(sendi);
     }
 
     @Override

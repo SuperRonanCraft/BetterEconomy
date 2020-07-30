@@ -10,5 +10,13 @@ commands:
     description: Main economy command
 
 permissions:
-  bettereconomy.admin:
-    default: false
+  bettereconomy.add:
+    description: Add balance of other
+  bettereconomy.reload:
+    description: Reload plugin
+  bettereconomy.remove:
+    description: Remove from anothers balance
+  bettereconomy.set:
+    description: Set balance of other
+  bettereconomy.bal.other:
+    description: Get balance of other

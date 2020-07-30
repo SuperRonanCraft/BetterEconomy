@@ -121,23 +121,42 @@ public class EconomyImplementer implements Economy {
     }
 
     @Override
-    public EconomyResponse withdrawPlayer(String s, double v) {
+    public EconomyResponse withdrawPlayer(String s, double amt) {
+        Player player = Bukkit.getPlayer(s);
+        UUID id = player.getUniqueId();
+        playerBank.put(id, playerBank.get(id) - amt);
+        checkPlayer(player);
         return null;
     }
 
     @Override
-    public EconomyResponse withdrawPlayer(OfflinePlayer player, double v) {
+    public EconomyResponse withdrawPlayer(OfflinePlayer player, double amt) {
+        UUID id = player.getUniqueId();
+        playerBank.put(id, playerBank.get(id) - amt);
+        checkPlayer(player);
         return null;
     }
 
     @Override
-    public EconomyResponse withdrawPlayer(String s, String s1, double v) {
+    public EconomyResponse withdrawPlayer(String s, String s1, double amt) {
+        Player player = Bukkit.getPlayer(s);
+        UUID id = player.getUniqueId();
+        playerBank.put(id, playerBank.get(id) - amt);
+        checkPlayer(player);
         return null;
     }
 
     @Override
-    public EconomyResponse withdrawPlayer(OfflinePlayer player, String s, double v) {
+    public EconomyResponse withdrawPlayer(OfflinePlayer player, String s, double amt) {
+        UUID id = player.getUniqueId();
+        playerBank.put(id, playerBank.get(id) - amt);
+        checkPlayer(player);
         return null;
+    }
+
+    private void checkPlayer(OfflinePlayer p) {
+        if (playerBank.getOrDefault(p.getUniqueId(), 0.0) < 0.0)
+            playerBank.put(p.getUniqueId(), 0.0);
     }
 
     @Override

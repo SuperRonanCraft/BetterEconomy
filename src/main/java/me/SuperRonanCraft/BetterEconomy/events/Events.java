@@ -11,10 +11,10 @@ import org.bukkit.event.player.PlayerQuitEvent;
 public class Events implements Listener {
 
     public void load(boolean reload) {
-        Bukkit.getPluginManager().registerEvents(this, getPl());
-        if (reload)
-            for (Player p : Bukkit.getOnlinePlayers())
-                loadPlayer(p);
+        if (!reload)
+            Bukkit.getPluginManager().registerEvents(this, getPl());
+        for (Player p : Bukkit.getOnlinePlayers())
+            loadPlayer(p);
     }
 
     @EventHandler
@@ -23,7 +23,7 @@ public class Events implements Listener {
     }
 
     public void loadPlayer(Player p) {
-        boolean newPlayer = getPl().getDatabase().playerCreate(p.getUniqueId(), p);
+        boolean newPlayer = getPl().getDatabase().playerCreate(p.getUniqueId(), p, 25.0);
         getPl().getEconomy().createPlayerAccount(p);
         if (newPlayer)
             getPl().getEconomy().playerBank.put(p.getUniqueId(), 25.0);
