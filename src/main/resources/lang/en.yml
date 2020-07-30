@@ -13,12 +13,12 @@ Messages:
   Reload: '%prefix% &eReloaded config and messages!'
   Top:
     Prefix: '&e&m-----&7 %prefix% &e&m-----'
-    Player: '&6{2}. &7{0}&f: &7{1}' #{0} player, {1} balance, {2} place
+    Player: '&6{2}. &7{0}&f: &7{1}' #{0} player, {1} balance, {2} index
 
 Help:
   Prefix: '&e&m-----&6 BetterEconomy &e&m-----'
   Balance: ' &7- &e/{0} &7- View your current balance'
-  Top: ' &7- &e/{0} &7- View top 10 balances'
+  Top: ' &7- &e/{0} top &7- View top 10 balances'
   Set: ' &7- &e/{0} set <player> <amount> &7- View your current balance'
   Remove: ' &7- &e/{0} remove <player> <amount> &7- View your current balance'
   Add: ' &7- &e/{0} add <player> <amount> &7- View your current balance'

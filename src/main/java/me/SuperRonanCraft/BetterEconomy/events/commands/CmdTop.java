@@ -16,16 +16,23 @@ import java.util.UUID;
 public class CmdTop implements EconomyCommand, EconomyCommandHelpable {
 
     private List<String> cacheTop = new ArrayList<>();
-    
+    private long cooldownGoal = 0;
+    private int max, cooldown;
+
+    CmdTop() {
+        max = getPl().getFiles().getType(FileBasics.FILETYPE.CONFIG).getInt("Top.Amount"); //Max amount of top players
+        cooldown = getPl().getFiles().getType(FileBasics.FILETYPE.CONFIG).getInt("Top.Cooldown"); //In Minutes
+    }
 
     @Override //Coins top
     public void execute(CommandSender sendi, String label, String[] args) {
         List<String> message;
+        if (cooldownGoal != 0 && System.currentTimeMillis() > cooldownGoal)
+            cacheTop.clear();
         if (cacheTop.isEmpty()) {
             message = new ArrayList<>();
             String prefix = getPl().getMessages().listTopPrefix();
             message.add(prefix);
-            int max = getPl().getFiles().getType(FileBasics.FILETYPE.CONFIG).getInt("Top");
             ResultSet topPlayers = getPl().getDatabase().getTop(max);
             try {
                 int index = 0;
@@ -33,7 +40,7 @@ public class CmdTop implements EconomyCommand, EconomyCommandHelpable {
                     String id = topPlayers.getString(getPl().getDatabase().uuid);
                     UUID uuid = UUID.fromString(id);
                     OfflinePlayer p = Bukkit.getServer().getOfflinePlayer(uuid);
-                    String name = null;
+                    String name;
                     if (p == null)
                         name = topPlayers.getString(getPl().getDatabase().playerName);
                     else
@@ -47,13 +54,18 @@ public class CmdTop implements EconomyCommand, EconomyCommandHelpable {
                     message.add(msg);
                     index++;
                 }
+                if (!topPlayers.last()) {
+                    message.add("No top players!");
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
             cacheTop = message;
+            cooldownGoal = System.currentTimeMillis() + (cooldown * 1000);
         } else {
             message = cacheTop;
-            debug("Top list shown from cache! ");
+            long waiting = (cooldownGoal - System.currentTimeMillis()) / 1000;
+            debug("Top list shown from cache! Waiting " + waiting + " more seconds");
         }
         getPl().getMessages().sms(sendi, message);
     }
