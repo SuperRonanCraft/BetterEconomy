@@ -3,6 +3,7 @@ package me.SuperRonanCraft.BetterEconomy;
 import me.SuperRonanCraft.BetterEconomy.events.Commands;
 import me.SuperRonanCraft.BetterEconomy.events.Events;
 import me.SuperRonanCraft.BetterEconomy.resources.Permissions;
+import me.SuperRonanCraft.BetterEconomy.resources.Systems;
 import me.SuperRonanCraft.BetterEconomy.resources.data.Database;
 import me.SuperRonanCraft.BetterEconomy.resources.economy.EconomyImplementer;
 import me.SuperRonanCraft.BetterEconomy.resources.files.FileBasics;
@@ -27,6 +28,7 @@ public class BetterEconomy extends JavaPlugin {
     private final Messages messages = new Messages();
     private final Permissions perms = new Permissions();
     private final Database database = new Database();
+    private final Systems systems = new Systems();
     //Settings
     private boolean debug = false;
 
@@ -86,6 +88,10 @@ public class BetterEconomy extends JavaPlugin {
 
     public Events getEvents() {
         return events;
+    }
+
+    public Systems getSystems() {
+        return systems;
     }
 
     public void debug(String msg) {

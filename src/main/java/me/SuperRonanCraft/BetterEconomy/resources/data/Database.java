@@ -4,13 +4,9 @@ import me.SuperRonanCraft.BetterEconomy.BetterEconomy;
 import me.SuperRonanCraft.BetterEconomy.resources.files.FileBasics;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -139,11 +135,16 @@ public class Database {
 
     public void playerSetBalance(final UUID id, double amt) {
         try {
-            PreparedStatement insert = sql.getConnection()
-                    .prepareStatement("UPDATE " + sql.table +  " SET " + serverName + "=?, " + playerName + "=? WHERE " + uuid + "=?");
+            String updateWithName = "UPDATE " + sql.table +  " SET " + serverName + "=?, " + playerName + "=? WHERE " + uuid + "=?";
+            String updateWithoutName = "UPDATE " + sql.table +  " SET " + serverName + "=? WHERE " + uuid + "=?";
+            String name = Bukkit.getOfflinePlayer(id).getName();
+            PreparedStatement insert = sql.getConnection().prepareStatement(name != null ? updateWithName : updateWithoutName);
             insert.setDouble(1, amt);
-            insert.setString(2, Bukkit.getOfflinePlayer(id).getName());
-            insert.setString(3, id.toString());
+            if (name != null) {
+                insert.setString(2, name);
+                insert.setString(3, id.toString());
+            } else
+                insert.setString(2, id.toString());
             insert.executeUpdate();
             debug("Player updated in Database!");
         } catch (SQLException e) {
@@ -151,7 +152,7 @@ public class Database {
         }
     }
 
-    public ResultSet getTop(int amt) {
+    public List<DatabasePlayer> getTop(int amt) {
         try {
             debug("Grabbing top players...");
             PreparedStatement statement = sql.getConnection()
@@ -164,11 +165,45 @@ public class Database {
                 result.beforeFirst(); // not rs.first() because the rs.next() below will move on, missing the first element
             }
             debug("Grabbed " + rowcount + " top players!");
-            return result;
+            List<DatabasePlayer> list = new ArrayList<>();
+            while(result.next()) {
+                String name = result.getString(playerName);
+                UUID id = UUID.fromString(result.getString(uuid));
+                double bal = result.getDouble(serverName);
+                list.add(new DatabasePlayer(name, id, bal));
+            }
+            return list;
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public List<DatabasePlayer> getSimilarPlayers(final String name) {
+        List<DatabasePlayer> list = new ArrayList<>();
+        try {
+            debug("Grabbing similar players...");
+            PreparedStatement statement = sql.getConnection()
+                    .prepareStatement("SELECT * FROM " + sql.table + " WHERE " + playerName + " LIKE ?");
+            statement.setString(1, "%" + name + "%");
+            ResultSet result = statement.executeQuery();
+            while (result.next()) {
+                DatabasePlayer info = new DatabasePlayer(result.getString(playerName), UUID.fromString(result.getString(uuid)), result.getDouble(serverName));
+                list.add(info);
+            }
+            for (DatabasePlayer p : list) {
+                if (p.name.equalsIgnoreCase(name)) {
+                    list.clear();
+                    list.add(p);
+                    debug("Name " + name + " is perfect");
+                    break;
+                }
+            }
+            debug("Grabbed " + list.size() + " similar players!");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 
     //CLEAN UP

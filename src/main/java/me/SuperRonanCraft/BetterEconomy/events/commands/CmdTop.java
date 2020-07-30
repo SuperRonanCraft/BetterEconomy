@@ -1,5 +1,6 @@
 package me.SuperRonanCraft.BetterEconomy.events.commands;
 
+import me.SuperRonanCraft.BetterEconomy.resources.data.DatabasePlayer;
 import me.SuperRonanCraft.BetterEconomy.resources.files.FileBasics;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -33,33 +34,19 @@ public class CmdTop implements EconomyCommand, EconomyCommandHelpable {
             message = new ArrayList<>();
             String prefix = getPl().getMessages().listTopPrefix();
             message.add(prefix);
-            ResultSet topPlayers = getPl().getDatabase().getTop(max);
-            try {
-                int index = 0;
-                while (topPlayers.next()) {
-                    String id = topPlayers.getString(getPl().getDatabase().uuid);
-                    UUID uuid = UUID.fromString(id);
-                    OfflinePlayer p = Bukkit.getServer().getOfflinePlayer(uuid);
-                    String name;
-                    if (p == null)
-                        name = topPlayers.getString(getPl().getDatabase().playerName);
-                    else
-                        name = p.getName();
-                    double bal = topPlayers.getDouble(getPl().getDatabase().serverName);
-                    String msg = getPl().getMessages().listTopPlayer();
-                    //0 = player, 1 = balance, 2 = index
-                    msg = msg.replace("{0}", name);
-                    msg = msg.replace("{1}", String.valueOf(bal));
-                    msg = msg.replace("{2}", String.valueOf(index + 1));
-                    message.add(msg);
-                    index++;
-                }
-                if (!topPlayers.last()) {
-                    message.add("No top players!");
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
+            List<DatabasePlayer> topPlayers = getPl().getDatabase().getTop(max);
+            int index = 0;
+            for (DatabasePlayer pInfo : topPlayers) {
+                String msg = getPl().getMessages().listTopPlayer();
+                //0 = player, 1 = balance, 2 = index
+                msg = msg.replace("{0}", pInfo.name);
+                msg = msg.replace("{1}", String.valueOf(pInfo.balance));
+                msg = msg.replace("{2}", String.valueOf(index + 1));
+                message.add(msg);
+                index++;
             }
+            if (topPlayers.isEmpty())
+                message.add("No top players!");
             cacheTop = message;
             cooldownGoal = System.currentTimeMillis() + (cooldown * 1000);
         } else {

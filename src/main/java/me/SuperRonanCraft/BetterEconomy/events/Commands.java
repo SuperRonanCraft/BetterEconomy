@@ -27,6 +27,9 @@ public class Commands {
                         if (sendi instanceof Player || type.get().allowConsole()) { //Is a player, or console is allowed
                             type.get().execute(sendi, label, args);
                             return;
+                        } else {
+                            getPl().getMessages().errorConsole(label);
+                            return;
                         }
             }
             EconomyCommandTypes.HELP.get().execute(sendi, label, args);

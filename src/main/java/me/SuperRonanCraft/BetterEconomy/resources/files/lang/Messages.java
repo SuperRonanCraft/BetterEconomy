@@ -66,6 +66,10 @@ public class Messages {
         sms(sendi, getLang().getString(preM + "Fail.Number"));
     }
 
+    public void getFailTooMany(CommandSender sendi, String p, String similar) {
+        sms(sendi, getLang().getString(preM + "Fail.TooMany").replace("{0}", p).replace("{1}", similar));
+    }
+
     //PROCESSING
     public void sms(CommandSender sendi, String msg) {
         if (!msg.equals(""))
