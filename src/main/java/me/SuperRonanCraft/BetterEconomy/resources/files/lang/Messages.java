@@ -34,6 +34,14 @@ public class Messages {
         sms(sendi, getLang().getString(preM + "Balance.Other").replace("{1}", String.valueOf(bal)).replace("{0}", p));
     }
 
+    public String listTopPrefix() {
+        return getLang().getString(preM + "Top.Prefix");
+    }
+
+    public String listTopPlayer() {
+        return getLang().getString(preM + "Top.Player");
+    }
+
     public void getReload(CommandSender sendi) {
         sms(sendi, getLang().getString(preM + "Reload"));
     }

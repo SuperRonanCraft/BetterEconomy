@@ -19,18 +19,19 @@ import java.util.UUID;
 
 public class Database {
     private final MySQLConnection sql = new MySQLConnection();
-    String serverName = "NULL";
+    public String serverName = "NULL";
     //Static Prefix's
-    String  uuid = "UUID";
+    public String uuid = "UUID", playerName = "Name";
     //Storage
     List<UUID> UUIDs = new ArrayList<>();
     HashMap<UUID, Double> Balance = new HashMap<>();
 
+    //LOADING
     public void load() {
         resetCache();
         FileBasics.FILETYPE sql = FileBasics.FILETYPE.CONFIG;
         serverName = sql.getString("Database.Server");
-        if (serverName.equals(uuid)) {
+        if (serverName.equals(uuid) || serverName.equals(playerName)) { //Cant name a server "Name"... dummy
             serverName = "ERROR";
             getPl().getLogger().severe("You can't name this server " + serverName + "! Please change it asap!");
         }
@@ -38,6 +39,7 @@ public class Database {
         createColumns();
     }
 
+    //MYSQL
     private void createColumns() {
         try {
             PreparedStatement statement = sql.getConnection()
@@ -57,13 +59,18 @@ public class Database {
                             .prepareStatement("ALTER TABLE " + sql.table + " ADD " + serverName + " DOUBLE DEFAULT 0 NOT NULL");
                     insert.executeUpdate();
                     debug("Added missing column " + serverName);
-                } else {
-                    debug("Nothing missing! Mysql is setup!");
                 }
+                if (!cNames.contains(playerName)) {
+                    PreparedStatement insert = sql.getConnection()
+                            .prepareStatement("ALTER TABLE " + sql.table + " ADD " + playerName + " VARCHAR(16)");
+                    insert.executeUpdate();
+                    debug("Added missing column " + playerName);
+                }
+                debug("Mysql is setup!");
             } else { //Table doesn't exist, create one
                 PreparedStatement createStatement = sql.getConnection()
                         .prepareStatement("CREATE TABLE " + sql.table + " (" + uuid + " VARCHAR(36) PRIMARY KEY, "
-                                + serverName + " DOUBLE DEFAULT 0 NOT NULL)");
+                                + serverName + " DOUBLE DEFAULT 0 NOT NULL ," + playerName + " VARCHAR(16))");
                 createStatement.executeUpdate();
                 debug("Tables created! Mysql is setup!");
             }
@@ -72,6 +79,7 @@ public class Database {
         }
     }
 
+    //PLAYER BALANCE'S
     public boolean playerExists(UUID id) {
         try {
             PreparedStatement statement = sql.getConnection()
@@ -94,10 +102,11 @@ public class Database {
         try {
             if (!playerExists(id)) {
                 PreparedStatement insert = sql.getConnection()
-                        .prepareStatement("INSERT INTO " + sql.table + "(" + uuid + "," + serverName +")" +
-                                "VALUE (?,?)");
+                        .prepareStatement("INSERT INTO " + sql.table + "(" + uuid + "," + playerName +"," + serverName + ")" +
+                                "VALUE (?,?,?)");
                 insert.setString(1, id.toString());
-                insert.setDouble(2, def);
+                insert.setString(2, p.getName());
+                insert.setDouble(3, def);
                 insert.executeUpdate();
                 debug("Player inserted into Database!");
                 return true;
@@ -131,9 +140,10 @@ public class Database {
     public void playerSetBalance(final UUID id, double amt) {
         try {
             PreparedStatement insert = sql.getConnection()
-                    .prepareStatement("UPDATE " + sql.table +  " SET " + serverName + "=? " + " WHERE " + uuid + "=?");
+                    .prepareStatement("UPDATE " + sql.table +  " SET " + serverName + "=?, " + playerName + "=? WHERE " + uuid + "=?");
             insert.setDouble(1, amt);
-            insert.setString(2, id.toString());
+            insert.setString(2, Bukkit.getOfflinePlayer(id).getName());
+            insert.setString(3, id.toString());
             insert.executeUpdate();
             debug("Player updated in Database!");
         } catch (SQLException e) {
@@ -141,6 +151,27 @@ public class Database {
         }
     }
 
+    public ResultSet getTop(int amt) {
+        try {
+            debug("Grabbing top players...");
+            PreparedStatement statement = sql.getConnection()
+                    .prepareStatement("SELECT * FROM " + sql.table + " ORDER BY " + serverName + " DESC LIMIT ?");
+            statement.setInt(1, amt);
+            ResultSet result = statement.executeQuery();
+            int rowcount = 0;
+            if (result.last()) {
+                rowcount = result.getRow();
+                result.beforeFirst(); // not rs.first() because the rs.next() below will move on, missing the first element
+            }
+            debug("Grabbed " + rowcount + " top players!");
+            return result;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    //CLEAN UP
     public void playerClean(final UUID id) {
         UUIDs.remove(id);
         Balance.remove(id);
@@ -151,6 +182,7 @@ public class Database {
         Balance.clear();
     }
 
+    //GRABS
     void debug(String msg) {
         BetterEconomy.getInstance().debug(msg);
     }

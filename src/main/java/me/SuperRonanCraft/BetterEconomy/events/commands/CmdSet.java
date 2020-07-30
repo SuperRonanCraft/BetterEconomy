@@ -14,8 +14,15 @@ public class CmdSet implements EconomyCommand, EconomyCommandHelpable, EconomyCo
             if (p != null) {
                 try {
                     double amt = Double.parseDouble(args[2]);
-                    getPl().getEconomy().playerBank.put(p.getUniqueId(), amt);
-                    getPl().getMessages().getSuccessSet(sendi, p.getName(), String.valueOf(amt));
+                    double current = getPl().getEconomy().getBalance(p);
+                    if (current > amt) {
+                        double deduct = amt - current;
+                        getPl().getEconomy().withdrawPlayer(p, deduct);
+                    } else if (current < amt) {
+                        double add = current - amt;
+                        getPl().getEconomy().depositPlayer(p, add);
+                    }
+                    getPl().getMessages().getSuccessSet(sendi, p.getName(), String.valueOf(getPl().getEconomy().getBalance(p)));
                 } catch (NumberFormatException e) {
                     getPl().getMessages().getFailNumber(sendi);
                 }

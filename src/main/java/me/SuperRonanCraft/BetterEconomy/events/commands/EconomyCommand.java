@@ -19,6 +19,10 @@ public interface EconomyCommand {
         return true;
     };
 
+    default void debug(String msg) {
+        getPl().debug(msg);
+    }
+
     default BetterEconomy getPl() {
         return BetterEconomy.getInstance();
     }

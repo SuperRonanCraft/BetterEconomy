@@ -13,7 +13,7 @@ import java.util.UUID;
 
 public class EconomyImplementer implements Economy {
 
-    public HashMap<UUID, Double> playerBank = new HashMap<>();
+    private HashMap<UUID, Double> playerBank = new HashMap<>();
 
     public void load() {
         playerBank.clear();
@@ -21,7 +21,7 @@ public class EconomyImplementer implements Economy {
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
     }
 
     @Override
@@ -46,32 +46,38 @@ public class EconomyImplementer implements Economy {
 
     @Override
     public String currencyNamePlural() {
-        return null;
+        return "Coins";
     }
 
     @Override
     public String currencyNameSingular() {
-        return null;
+        return "Coin";
     }
 
     @Override
     public boolean hasAccount(String s) {
-        return false;
+        Player player = Bukkit.getPlayer(s);
+        UUID id = player.getUniqueId();
+        return playerBank.containsKey(id);
     }
 
     @Override
     public boolean hasAccount(OfflinePlayer player) {
-        return false;
+        UUID id = player.getUniqueId();
+        return playerBank.containsKey(id);
     }
 
     @Override
     public boolean hasAccount(String s, String s1) {
-        return false;
+        Player player = Bukkit.getPlayer(s);
+        UUID id = player.getUniqueId();
+        return playerBank.containsKey(id);
     }
 
     @Override
     public boolean hasAccount(OfflinePlayer player, String s) {
-        return false;
+        UUID id = player.getUniqueId();
+        return playerBank.containsKey(id);
     }
 
     @Override
@@ -100,24 +106,38 @@ public class EconomyImplementer implements Economy {
         return playerBank.getOrDefault(id, 0.0);
     }
 
+    public void playerRemove(UUID id) {
+        playerBank.remove(id);
+    }
+
     @Override
     public boolean has(String s, double v) {
-        return false;
+        Player player = Bukkit.getPlayer(s);
+        UUID id = player.getUniqueId();
+        double amount = playerBank.getOrDefault(id,  0.0);
+        return amount >= v;
     }
 
     @Override
     public boolean has(OfflinePlayer player, double v) {
-        return false;
+        UUID id = player.getUniqueId();
+        double amount = playerBank.getOrDefault(id,  0.0);
+        return amount >= v;
     }
 
     @Override
     public boolean has(String s, String s1, double v) {
-        return false;
+        Player player = Bukkit.getPlayer(s);
+        UUID id = player.getUniqueId();
+        double amount = playerBank.getOrDefault(id,  0.0);
+        return amount >= v;
     }
 
     @Override
     public boolean has(OfflinePlayer player, String s, double v) {
-        return false;
+        UUID id = player.getUniqueId();
+        double amount = playerBank.getOrDefault(id,  0.0);
+        return amount >= v;
     }
 
     @Override

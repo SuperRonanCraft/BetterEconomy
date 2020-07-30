@@ -26,10 +26,10 @@ public class Events implements Listener {
         boolean newPlayer = getPl().getDatabase().playerCreate(p.getUniqueId(), p, 25.0);
         getPl().getEconomy().createPlayerAccount(p);
         if (newPlayer)
-            getPl().getEconomy().playerBank.put(p.getUniqueId(), 25.0);
+            getPl().getEconomy().depositPlayer(p, 25.0);
         else {
             double bal = getPl().getDatabase().playerBalance(p.getUniqueId());
-            getPl().getEconomy().playerBank.put(p.getUniqueId(), bal);
+            getPl().getEconomy().depositPlayer(p, bal);
         }
     }
 
@@ -39,10 +39,10 @@ public class Events implements Listener {
     }
 
     public void unloadPlayer(Player p) {
-        Double amt = getPl().getEconomy().playerBank.getOrDefault(p.getUniqueId(), 0.0);
+        double amt = getPl().getEconomy().getBalance(p);
         getPl().getDatabase().playerSetBalance(p.getUniqueId(), amt);
         getPl().getDatabase().playerClean(p.getUniqueId());
-        getPl().getEconomy().playerBank.remove(p.getUniqueId());
+        getPl().getEconomy().playerRemove(p.getUniqueId());
     }
 
     private BetterEconomy getPl() {

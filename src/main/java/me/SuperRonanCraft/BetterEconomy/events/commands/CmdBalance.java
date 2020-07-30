@@ -14,11 +14,10 @@ public class CmdBalance implements EconomyCommand, EconomyCommandHelpable, Econo
         if (args.length == 2 && getPl().getPerms().getBalOther(sendi)) {
             String pName = args[1];
             Player p = Bukkit.getPlayer(pName);
-            if (p != null) {
+            if (p != null)
                 getPl().getMessages().getBalanceOther(sendi, getPl().getEconomy().getBalance(p), p.getName());
-            } else {
+            else
                 getPl().getMessages().getFailName(sendi, pName);
-            }
         } else {
             getPl().getMessages().getBalance(sendi, getPl().getEconomy().getBalance((Player) sendi));
         }

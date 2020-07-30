@@ -1,5 +1,7 @@
 package me.SuperRonanCraft.BetterEconomy.resources.files.lang;
 
+import java.util.List;
+
 public class MessagesHelp {
 
     private static String pre = "Help.";
@@ -15,6 +17,10 @@ public class MessagesHelp {
 
     public String getBalance() {
         return pl.getLang().getString(pre + "Balance");
+    }
+
+    public String getTop() {
+        return pl.getLang().getString(pre + "Top");
     }
 
     public String getReload() {

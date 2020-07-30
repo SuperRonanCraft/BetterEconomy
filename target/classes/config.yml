@@ -1,5 +1,6 @@
 Language-File: 'en.yml'
 Debug: false
+Top: 10 #How many players should we show in '/coins top'
 Format:
   Symbol: '$'
   Single: 'Coin'
