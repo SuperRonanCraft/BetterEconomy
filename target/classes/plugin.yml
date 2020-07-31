@@ -4,9 +4,12 @@ version: '1.0'
 api-version: '1.13'
 author: SuperRonanCraft
 depend: [Vault]
+softdepend: [PlaceholderAPI]
+load: STARTUP
 
 commands:
-  coins:
+  economy:
+    aliases: [eco]
     description: Main economy command
 
 permissions:

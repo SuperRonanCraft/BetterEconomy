@@ -5,8 +5,8 @@ Messages:
     Other: '%prefix% &7Balance of &e{0} &7is &e{1}'
   Success:
     Add: '%prefix% &7Added &e{0} &7for &6{1}''s &7account!'
-    Set: '%prefix% &Set balance to &e{0} &7for &6{1}''s &7account!'
-    Remove: '%prefix% &7Removed &e{0} &7from &6{1}''s &7account!'
+    Set: '%prefix% &7Set balance to &e{0} &7for &6{1}''s &7account!'
+    Remove: '%prefix% &7Removed &e{0} &7from &6{1}''s &7account! They now have &e{2}'
   Fail:
     Name: '%prefix% &7The player &e{0} &7was not found on the database!'
     Number: '%prefix% &7Invalid amount! &fPlease use an integer!'
@@ -18,11 +18,11 @@ Messages:
 
 Help:
   Prefix: '&e&m-----&6 BetterEconomy &e&m-----'
-  Balance: ' &7- &e/{0} &7- View your current balance'
+  Balance: ' &7- &e/{0} bal &7- View your current balance'
   Top: ' &7- &e/{0} top &7- View top 10 balances'
-  Set: ' &7- &e/{0} set <player> <amount> &7- View your current balance'
-  Remove: ' &7- &e/{0} remove <player> <amount> &7- View your current balance'
-  Add: ' &7- &e/{0} add <player> <amount> &7- View your current balance'
+  Set: ' &7- &e/{0} set <player> <amount> &7- Set a players balance'
+  Remove: ' &7- &e/{0} remove <player> <amount> &7- Remove from a players balance'
+  Add: ' &7- &e/{0} add <player> <amount> &7- Add to a players balance'
   Reload: ' &7- &e/{0} reload &7- Reload config and messages'
 
 Usage:

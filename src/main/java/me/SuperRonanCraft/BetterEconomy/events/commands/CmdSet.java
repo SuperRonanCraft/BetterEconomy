@@ -1,6 +1,7 @@
 package me.SuperRonanCraft.BetterEconomy.events.commands;
 
 import me.SuperRonanCraft.BetterEconomy.resources.data.DatabasePlayer;
+import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -16,6 +17,10 @@ public class CmdSet implements EconomyCommand, EconomyCommandHelpable, EconomyCo
         double amt;
         try {
             amt = Double.parseDouble(args[2]);
+            if (amt < 0) {
+                getPl().getMessages().getFailNumber(sendi);
+                return;
+            }
         } catch (NumberFormatException e) {
             getPl().getMessages().getFailNumber(sendi);
             return;
@@ -23,14 +28,7 @@ public class CmdSet implements EconomyCommand, EconomyCommandHelpable, EconomyCo
         String pName = args[1];
         Player p = Bukkit.getPlayer(pName);
         if (p != null) { //Local player
-            double current = getPl().getEconomy().getBalance(p);
-            if (current > amt) {
-                double deduct = amt - current;
-                getPl().getEconomy().withdrawPlayer(p, deduct);
-            } else if (current < amt) {
-                double add = current - amt;
-                getPl().getEconomy().depositPlayer(p, add);
-            }
+            getPl().getEconomy().setPlayer(p, amt);
             getPl().getMessages().getSuccessSet(sendi, p.getName(), String.valueOf(getPl().getEconomy().getBalance(p)));
         } else { //Look on the mysql
             DatabasePlayer pInfo = getPl().getSystems().getDatabasePlayer(sendi, args[1]);

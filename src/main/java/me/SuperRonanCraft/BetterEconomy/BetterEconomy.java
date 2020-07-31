@@ -10,6 +10,7 @@ import me.SuperRonanCraft.BetterEconomy.resources.files.FileBasics;
 import me.SuperRonanCraft.BetterEconomy.resources.files.Files;
 import me.SuperRonanCraft.BetterEconomy.resources.files.lang.Messages;
 import me.SuperRonanCraft.BetterEconomy.resources.economy.VaultHook;
+import me.SuperRonanCraft.BetterEconomy.resources.softdepends.DependsPlaceholders;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -29,6 +30,7 @@ public class BetterEconomy extends JavaPlugin {
     private final Permissions perms = new Permissions();
     private final Database database = new Database();
     private final Systems systems = new Systems();
+    private DependsPlaceholders ph = null;
     //Settings
     private boolean debug = false;
 
@@ -48,6 +50,11 @@ public class BetterEconomy extends JavaPlugin {
         economyImplementer.load(); //Reset cache if any
         database.load(); //Reset cache and connect to database
         events.load(reload); //Event Listener
+        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            if (ph == null)
+                ph = new DependsPlaceholders();
+            ph.register();
+        }
     }
 
     @Override

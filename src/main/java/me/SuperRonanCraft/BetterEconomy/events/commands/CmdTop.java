@@ -18,7 +18,7 @@ public class CmdTop implements EconomyCommand, EconomyCommandHelpable {
 
     private List<String> cacheTop = new ArrayList<>();
     private long cooldownGoal = 0;
-    private int max, cooldown;
+    private final int max, cooldown;
 
     CmdTop() {
         max = getPl().getFiles().getType(FileBasics.FILETYPE.CONFIG).getInt("Top.Amount"); //Max amount of top players

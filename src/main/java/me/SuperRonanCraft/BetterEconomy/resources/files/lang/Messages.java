@@ -50,8 +50,8 @@ public class Messages {
         sms(sendi, getLang().getString(preM + "Success.Add").replace("{0}", amt).replace("{1}", p));
     }
 
-    public void getSuccessRemove(CommandSender sendi, String p, String amt) {
-        sms(sendi, getLang().getString(preM + "Success.Remove").replace("{0}", amt).replace("{1}", p));
+    public void getSuccessRemove(CommandSender sendi, String p, String amt, String bal) {
+        sms(sendi, getLang().getString(preM + "Success.Remove").replace("{0}", amt).replace("{1}", p).replace("{2}", bal));
     }
 
     public void getSuccessSet(CommandSender sendi, String p, String amt) {

@@ -23,14 +23,15 @@ public class CmdRemove implements EconomyCommand, EconomyCommandHelpable, Econom
         String pName = args[1];
         Player p = Bukkit.getPlayer(pName);
         if (p != null) {
+            amt = Math.min(getPl().getEconomy().getBalance(p), amt);
             getPl().getEconomy().withdrawPlayer(p, amt);
-            getPl().getMessages().getSuccessRemove(sendi, p.getName(), String.valueOf(amt));
+            getPl().getMessages().getSuccessRemove(sendi, p.getName(), String.valueOf(amt), String.valueOf(getPl().getEconomy().getBalance(p)));
         } else {
             DatabasePlayer pInfo = getPl().getSystems().getDatabasePlayer(sendi, args[1]);
             if (pInfo != null) { //Only one player found
                 double newamt = Math.max(pInfo.balance - amt, 0.0);
                 getPl().getDatabase().playerSetBalance(pInfo.id, newamt);
-                getPl().getMessages().getSuccessRemove(sendi, pInfo.name, String.valueOf(newamt));
+                getPl().getMessages().getSuccessRemove(sendi, pInfo.name, String.valueOf(newamt), String.valueOf(newamt));
             }
         }
     }
