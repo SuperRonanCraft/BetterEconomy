@@ -6,7 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class CmdSet implements EconomyCommand, EconomyCommandHelpable, EconomyCommandTabPlayers {
+public class CmdSet implements EconomyCommand, EconomyCommandHelpable, EconomyCommandTabPlayers, EconomyCommandDoubleGrab {
 
     @Override //Coins set [player] [amount]
     public void execute(CommandSender sendi, String label, String[] args) {
@@ -16,7 +16,7 @@ public class CmdSet implements EconomyCommand, EconomyCommandHelpable, EconomyCo
         }
         double amt;
         try {
-            amt = Double.parseDouble(args[2]);
+            amt = getDouble(sendi, args[2]);
             if (amt < 0) {
                 getPl().getMessages().getFailNumber(sendi);
                 return;

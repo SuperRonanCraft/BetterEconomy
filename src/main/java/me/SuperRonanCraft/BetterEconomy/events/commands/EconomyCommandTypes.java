@@ -5,6 +5,7 @@ public enum EconomyCommandTypes {
     HELP(new CmdHelp()), //Keep second for `help` command
     //Order of how to show in `help` command
     TOP(new CmdTop()),
+    PAY(new CmdPay()),
     ADD(new CmdAdd()),
     REMOVE(new CmdRemove()),
     SET(new CmdSet()),

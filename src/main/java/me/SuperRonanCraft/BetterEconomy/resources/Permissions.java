@@ -18,9 +18,9 @@ public class Permissions {
         return perm(pre + "reload", sendi);
     }
 
-    //Send money to other
-    public boolean getSend(CommandSender sendi) {
-        return perm(pre + "send", sendi);
+    //Pay money to other
+    public boolean getPay(CommandSender sendi) {
+        return perm(pre + "pay", sendi);
     }
 
     //Set a balance

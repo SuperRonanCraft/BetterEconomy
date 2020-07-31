@@ -5,7 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class CmdRemove implements EconomyCommand, EconomyCommandHelpable, EconomyCommandTabPlayers {
+public class CmdRemove implements EconomyCommand, EconomyCommandHelpable, EconomyCommandTabPlayers, EconomyCommandDoubleGrab {
 
     @Override //Coins remove [player] [amount]
     public void execute(CommandSender sendi, String label, String[] args) {
@@ -15,7 +15,7 @@ public class CmdRemove implements EconomyCommand, EconomyCommandHelpable, Econom
         }
         double amt;
         try {
-            amt = Double.parseDouble(args[2]);
+            amt = getDouble(sendi, args[2]);
         } catch (NumberFormatException e) {
             getPl().getMessages().getFailNumber(sendi);
             return;

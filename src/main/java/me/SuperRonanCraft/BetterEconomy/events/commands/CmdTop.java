@@ -32,21 +32,17 @@ public class CmdTop implements EconomyCommand, EconomyCommandHelpable {
             cacheTop.clear();
         if (cacheTop.isEmpty()) {
             message = new ArrayList<>();
-            String prefix = getPl().getMessages().listTopPrefix();
+            String prefix = getPl().getMessages().listTopPrefix(String.valueOf(max));
             message.add(prefix);
             List<DatabasePlayer> topPlayers = getPl().getDatabase().getTop(max);
             int index = 0;
             for (DatabasePlayer pInfo : topPlayers) {
-                String msg = getPl().getMessages().listTopPlayer();
-                //0 = player, 1 = balance, 2 = index
-                msg = msg.replace("{0}", pInfo.name);
-                msg = msg.replace("{1}", String.valueOf(pInfo.balance));
-                msg = msg.replace("{2}", String.valueOf(index + 1));
-                message.add(msg);
+                //0 = index, 1 = player, 2 = balance
                 index++;
+                message.add(getPl().getMessages().listTopPlayer(String.valueOf(index), pInfo.name, String.valueOf(pInfo.balance)));
             }
             if (topPlayers.isEmpty())
-                message.add("No top players!");
+                message.add(getPl().getMessages().listTopNone());
             cacheTop = message;
             cooldownGoal = System.currentTimeMillis() + (cooldown * 1000);
         } else {

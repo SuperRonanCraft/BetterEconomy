@@ -12,7 +12,7 @@ public class CmdBalance implements EconomyCommand, EconomyCommandHelpable, Econo
 
     @Override //Coins or //Coins bal [player]
     public void execute(CommandSender sendi, String label, String[] args) {
-        if (args.length == 2 && getPl().getPerms().getBalOther(sendi)) {
+        if (args.length >= 2 && getPl().getPerms().getBalOther(sendi)) {
             String pName = args[1];
             Player p = Bukkit.getPlayer(pName);
             if (p != null)

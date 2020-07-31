@@ -34,40 +34,66 @@ public class Messages {
         sms(sendi, getLang().getString(preM + "Balance.Other").replace("{1}", String.valueOf(bal)).replace("{0}", p));
     }
 
-    public String listTopPrefix() {
-        return getLang().getString(preM + "Top.Prefix");
+    public String listTopPrefix(String topAmount) {
+        return getLang().getString(preM + "Top.Prefix").replace("{0}", topAmount);
     }
 
-    public String listTopPlayer() {
-        return getLang().getString(preM + "Top.Player");
+    public String listTopPlayer(String index, String player, String amount) {
+        return getLang().getString(preM + "Top.Player").replace("{0}", index). replace("{1}", player).replace("{2}", amount);
     }
 
+    public String listTopNone() {
+        return getLang().getString(preM + "Top.None");
+    }
+
+    //Reload
     public void getReload(CommandSender sendi) {
         sms(sendi, getLang().getString(preM + "Reload"));
     }
 
+    //Add
     public void getSuccessAdd(CommandSender sendi, String p, String amt) {
         sms(sendi, getLang().getString(preM + "Success.Add").replace("{0}", amt).replace("{1}", p));
     }
 
+    //Remove
     public void getSuccessRemove(CommandSender sendi, String p, String amt, String bal) {
         sms(sendi, getLang().getString(preM + "Success.Remove").replace("{0}", amt).replace("{1}", p).replace("{2}", bal));
     }
 
+    //Set
     public void getSuccessSet(CommandSender sendi, String p, String amt) {
         sms(sendi, getLang().getString(preM + "Success.Set").replace("{0}", amt).replace("{1}", p));
     }
 
+    //Pay - Success
+    public void getSuccessPay(CommandSender sendi, String amt, String player) {
+        sms(sendi, getLang().getString(preM + "Success.Pay").replace("{0}", amt).replace("{1}", player));
+    }
+
+    //Player name error
     public void getFailName(CommandSender sendi, String p) {
         sms(sendi, getLang().getString(preM + "Fail.Name").replace("{0}", p));
     }
 
+    //Integer error
     public void getFailNumber(CommandSender sendi) {
         sms(sendi, getLang().getString(preM + "Fail.Number"));
     }
 
+    //Too many similar player names
     public void getFailTooMany(CommandSender sendi, String p, String similar) {
         sms(sendi, getLang().getString(preM + "Fail.TooMany").replace("{0}", p).replace("{1}", similar));
+    }
+
+    //Pay - Failed
+    public void getFailPay(CommandSender sendi, String player) {
+        sms(sendi, getLang().getString(preM + "Fail.Pay").replace("{0}", getPl().getEconomy().currencyNamePlural()).replace("{1}", player));
+    }
+
+    //Pay - Failed SELF
+    public void getFailSelf(CommandSender sendi) {
+        sms(sendi, getLang().getString(preM + "Fail.Self"));
     }
 
     //PROCESSING

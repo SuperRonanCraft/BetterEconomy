@@ -35,7 +35,7 @@ public class Database {
         createColumns();
     }
 
-    //MYSQL
+    //MYSQL Setup
     private void createColumns() {
         try {
             PreparedStatement statement = sql.getConnection()
@@ -75,7 +75,7 @@ public class Database {
         }
     }
 
-    //PLAYER BALANCE'S
+    //Check if a player exists
     public boolean playerExists(UUID id) {
         try {
             PreparedStatement statement = sql.getConnection()
@@ -94,6 +94,7 @@ public class Database {
         return false;
     }
 
+    //Create a player
     public boolean playerCreate(final UUID id, Player p, double def) {
         try {
             if (!playerExists(id)) {
@@ -114,6 +115,7 @@ public class Database {
         return false;
     }
 
+    //Get a players balance
     public double playerBalance(final UUID id) {
         try {
             PreparedStatement statement = sql.getConnection()
@@ -133,6 +135,7 @@ public class Database {
         return -1.0;
     }
 
+    //Set Balance
     public void playerSetBalance(final UUID id, double amt) {
         try {
             String updateWithName = "UPDATE " + sql.table +  " SET " + serverName + "=?, " + playerName + "=? WHERE " + uuid + "=?";
@@ -152,6 +155,22 @@ public class Database {
         }
     }
 
+    //Add to Balance
+    public boolean playerAddBalance(final UUID id, double amt) {
+        try {
+            PreparedStatement insert = sql.getConnection().prepareStatement("UPDATE " + sql.table + " SET " + serverName + "=" + serverName + "+? WHERE " + uuid + "=?");
+            insert.setDouble(1, amt);
+            insert.setString(2, id.toString());
+            insert.executeUpdate();
+            debug("Player updated in Database!");
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    //Get top players
     public List<DatabasePlayer> getTop(int amt) {
         try {
             debug("Grabbing top players...");
@@ -159,12 +178,6 @@ public class Database {
                     .prepareStatement("SELECT * FROM " + sql.table + " ORDER BY " + serverName + " DESC LIMIT ?");
             statement.setInt(1, amt);
             ResultSet result = statement.executeQuery();
-            int rowcount = 0;
-            if (result.last()) {
-                rowcount = result.getRow();
-                result.beforeFirst(); // not rs.first() because the rs.next() below will move on, missing the first element
-            }
-            debug("Grabbed " + rowcount + " top players!");
             List<DatabasePlayer> list = new ArrayList<>();
             while(result.next()) {
                 String name = result.getString(playerName);
@@ -172,6 +185,7 @@ public class Database {
                 double bal = result.getDouble(serverName);
                 list.add(new DatabasePlayer(name, id, bal));
             }
+            debug("Grabbed " + list.size() + " top players!");
             return list;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -179,6 +193,7 @@ public class Database {
         return null;
     }
 
+    //Get a list of players similar to input name
     public List<DatabasePlayer> getSimilarPlayers(final String name) {
         List<DatabasePlayer> list = new ArrayList<>();
         try {

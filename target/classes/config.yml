@@ -2,7 +2,7 @@ Language-File: 'en.yml'
 Debug: false
 Top:
   Amount: 10 #How many players should we show in '/coins top'
-  Cooldown: 5 #Cooldown in minutes
+  Cooldown: 300 #Cooldown in seconds
 Format:
   Symbol: '$'
   Single: 'Coin'
