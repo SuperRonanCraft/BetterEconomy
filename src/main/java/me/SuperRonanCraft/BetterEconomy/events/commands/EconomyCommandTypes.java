@@ -9,7 +9,8 @@ public enum EconomyCommandTypes {
     ADD(new CmdAdd()),
     REMOVE(new CmdRemove()),
     SET(new CmdSet()),
-    RELOAD(new CmdReload());
+    RELOAD(new CmdReload()),
+    VERSION(new CmdVersion());
 
     private final EconomyCommand cmd;
 

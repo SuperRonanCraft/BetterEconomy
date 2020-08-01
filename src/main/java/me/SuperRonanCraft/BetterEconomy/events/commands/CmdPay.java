@@ -35,7 +35,7 @@ public class CmdPay implements EconomyCommand, EconomyCommandHelpable, EconomyCo
                     } else
                         getPl().getMessages().getFailPay(sendi, p.getName());
                 } else { //Player is offline
-                    if (getPl().getEconomy().getBalance((payor)) >= amt) { //Has enough to pay out, to not call mysql everytime
+                    if (getPl().getEconomy().getBalance(payor) >= amt) { //Has enough to pay out, to not call mysql everytime
                         DatabasePlayer pInfo = getPl().getSystems().getDatabasePlayer(sendi, args[1]);
                         if (pInfo != null) { //Only one player found
                             if (getPl().getEconomy().withdrawPlayer(payor, amt).transactionSuccess()) {

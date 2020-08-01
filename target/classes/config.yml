@@ -9,6 +9,7 @@ Format:
   Plural: 'Coins'
 Database:
   Server: 'Lobby'
+  ForceUpdate: true #Update local players once their balances update
   MySQL:
     host: 'localhost'
     port: 3306

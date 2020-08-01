@@ -166,6 +166,7 @@ public class EconomyImplementer implements Economy {
         if (getBalance(p) - amt >= 0) {
             UUID id = p.getUniqueId();
             playerBank.put(id, playerBank.get(id) - amt);
+            getPl().getDatabase().playerSetBalance(id, playerBank.get(id));
             return responseSuccess(amt, getBalance(p));
         } else
             return responseFailed(amt, getBalance(p));

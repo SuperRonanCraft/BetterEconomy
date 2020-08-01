@@ -54,6 +54,7 @@ public class BetterEconomy extends JavaPlugin {
             if (ph == null)
                 ph = new DependsPlaceholders();
             ph.register();
+            debug("Placeholder API registered");
         }
     }
 

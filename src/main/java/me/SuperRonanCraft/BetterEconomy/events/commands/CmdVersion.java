@@ -2,13 +2,11 @@ package me.SuperRonanCraft.BetterEconomy.events.commands;
 
 import org.bukkit.command.CommandSender;
 
-public class CmdReload implements EconomyCommand, EconomyCommandHelpable {
+public class CmdVersion implements EconomyCommand, EconomyCommandHelpable {
 
     @Override
     public void execute(CommandSender sendi, String label, String[] args) {
-        getPl().load(true);
-        //for (Player p : Bukkit.getOnlinePlayers())
-        getPl().getMessages().getReload(sendi);
+        getPl().getMessages().sms(sendi, "%prefix% &aVersion &e#" + getPl().getDescription().getVersion());
     }
 
     @Override
