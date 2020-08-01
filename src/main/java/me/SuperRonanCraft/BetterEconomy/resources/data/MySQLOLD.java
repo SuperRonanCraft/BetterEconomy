@@ -27,12 +27,12 @@ public class MySQLOLD {
     private BetterEconomy getPl() {return BetterEconomy.getInstance();}
 
     public void load() {
-        FileBasics.FILETYPE sql = FileBasics.FILETYPE.CONFIG;
+        FileBasics.FileType sql = FileBasics.FileType.CONFIG;
         debug = getPl().getFiles().getType(sql).getBoolean("Debug");
         setup(sql);
     }
 
-    private void setup(FileBasics.FILETYPE sql) {
+    private void setup(FileBasics.FileType sql) {
         String pre = "Database.MySQL.";
         host = sql.getString(pre + "host");
         port = sql.getInt(pre + "port");

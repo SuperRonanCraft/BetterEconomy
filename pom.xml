@@ -11,7 +11,47 @@
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+    
+    <build>
+    	<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.1</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>3.2.4</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<relocations>
+						<relocation>
+							<pattern>com.zaxxer.hikari</pattern>
+							<shadedPattern>me.SuperRonanCraft.BetterEconomy.shaded.com.zaxxer.hikari</shadedPattern>
+						</relocation>
+						<relocation>
+							<pattern>org.slf4j</pattern>
+							<shadedPattern>me.SuperRonanCraft.BetterEconomy.shaded.org.slf4j</shadedPattern>
+						</relocation>
+					</relocations>
+				</configuration>
+			</plugin>
+		</plugins>
+    </build>
 
     <repositories>
         <repository>
@@ -28,6 +68,7 @@
         </repository>
     </repositories>
     <dependencies>
+    	<!-- Vault API -->
         <dependency>
             <groupId>com.github.MilkBowl</groupId>
             <artifactId>VaultAPI</artifactId>
@@ -49,19 +90,23 @@
             <version>1.13.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
-		<!-- Vault API -->
-        <dependency>
-            <groupId>com.github.MilkBowl</groupId>
-            <artifactId>VaultAPI</artifactId>
-            <version>1.7</version>
-            <scope>compile</scope>
-        </dependency>
         <!-- PlaceholderAPI Support -->
         <dependency>
             <groupId>me.clip</groupId>
             <artifactId>placeholderapi</artifactId>
             <version>2.8.7</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
+        </dependency>
+        <!-- Database handling -->
+        <dependency>
+        	<groupId>com.zaxxer</groupId>
+        	<artifactId>HikariCP</artifactId>
+        	<version>3.4.5</version>
+        </dependency>
+        <dependency>
+        	<groupId>org.slf4j</groupId>
+        	<artifactId>slf4j-jdk14</artifactId>
+        	<version>1.7.25</version>
         </dependency>
     </dependencies>
 

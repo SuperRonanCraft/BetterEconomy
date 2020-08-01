@@ -8,7 +8,7 @@ public class Files {
         return fileLangs;
     }
 
-    public FileBasics.FILETYPE getType(FileBasics.FILETYPE type) {
+    public FileBasics.FileType getType(FileBasics.FileType type) {
         return fileBasics.types.get(fileBasics.types.indexOf(type));
     }
 

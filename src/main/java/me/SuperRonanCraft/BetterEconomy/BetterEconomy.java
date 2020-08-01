@@ -42,7 +42,7 @@ public class BetterEconomy extends JavaPlugin {
 
     public void load(boolean reload) {
         files.loadAll(); //Load Files
-        debug = getFiles().getType(FileBasics.FILETYPE.CONFIG).getBoolean("Debug");
+        debug = getFiles().getType(FileBasics.FileType.CONFIG).getBoolean("Debug");
         if (reload)
             vaultHook.unhook();
         vaultHook.hook(); //Economy Start

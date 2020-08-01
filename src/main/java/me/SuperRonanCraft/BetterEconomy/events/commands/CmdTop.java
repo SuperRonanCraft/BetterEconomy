@@ -21,8 +21,8 @@ public class CmdTop implements EconomyCommand, EconomyCommandHelpable {
     private final int max, cooldown;
 
     CmdTop() {
-        max = getPl().getFiles().getType(FileBasics.FILETYPE.CONFIG).getInt("Top.Amount"); //Max amount of top players
-        cooldown = getPl().getFiles().getType(FileBasics.FILETYPE.CONFIG).getInt("Top.Cooldown"); //In Minutes
+        max = getPl().getFiles().getType(FileBasics.FileType.CONFIG).getInt("Top.Amount"); //Max amount of top players
+        cooldown = getPl().getFiles().getType(FileBasics.FileType.CONFIG).getInt("Top.Cooldown"); //In Minutes
     }
 
     @Override //Coins top

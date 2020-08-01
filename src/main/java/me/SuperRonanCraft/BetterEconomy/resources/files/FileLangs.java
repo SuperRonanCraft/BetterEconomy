@@ -32,7 +32,7 @@ public class FileLangs {
     @SuppressWarnings("all")
     public void load() {
         BetterEconomy pl = BetterEconomy.getInstance();
-        String fileName = "lang" + File.separator + pl.getFiles().getType(FileBasics.FILETYPE.CONFIG).getString("Language-File");
+        String fileName = "lang" + File.separator + pl.getFiles().getType(FileBasics.FileType.CONFIG).getString("Language-File");
         File file = new File(pl.getDataFolder(), fileName);
         if (!file.exists())
             pl.saveResource(fileName, false);
