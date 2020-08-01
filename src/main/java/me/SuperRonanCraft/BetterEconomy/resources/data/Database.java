@@ -2,9 +2,11 @@ package me.SuperRonanCraft.BetterEconomy.resources.data;
 
 import me.SuperRonanCraft.BetterEconomy.BetterEconomy;
 import me.SuperRonanCraft.BetterEconomy.resources.files.FileBasics;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -25,7 +27,7 @@ public class Database {
     //LOADING
     public void load() {
         resetCache();
-        FileBasics.FILETYPE sql = FileBasics.FILETYPE.CONFIG;
+        FileBasics.FileType sql = FileBasics.FileType.CONFIG;
         serverName = sql.getString("Database.Server");
         if (serverName.equals(uuid) || serverName.equals(playerName)) { //Cant name a server "Name"... dummy
             serverName = "ERROR";
@@ -37,60 +39,74 @@ public class Database {
 
     //MYSQL Setup
     private void createColumns() {
-        try {
-            PreparedStatement statement = sql.getConnection()
-                    .prepareStatement("SHOW TABLES LIKE '" + sql.table + "'");
-            ResultSet result = statement.executeQuery();
-            if (result.next()) { //Check for missing columns
-                PreparedStatement columnStatement = sql.getConnection()
-                        .prepareStatement("SHOW COLUMNS FROM " + sql.table);
-                ResultSet columns = columnStatement.executeQuery();
-                List<String> cNames = new ArrayList<>();
-                while (columns.next()) {
-                    String name = columns.getString(1);
-                    cNames.add(name);
-                }
-                if (!cNames.contains(serverName)) {
-                    PreparedStatement insert = sql.getConnection()
-                            .prepareStatement("ALTER TABLE " + sql.table + " ADD " + serverName + " DOUBLE DEFAULT 0 NOT NULL");
-                    insert.executeUpdate();
-                    debug("Added missing column " + serverName);
-                }
-                if (!cNames.contains(playerName)) {
-                    PreparedStatement insert = sql.getConnection()
-                            .prepareStatement("ALTER TABLE " + sql.table + " ADD " + playerName + " VARCHAR(16)");
-                    insert.executeUpdate();
-                    debug("Added missing column " + playerName);
-                }
-                debug("Mysql is setup!");
-            } else { //Table doesn't exist, create one
-                PreparedStatement createStatement = sql.getConnection()
-                        .prepareStatement("CREATE TABLE " + sql.table + " (" + uuid + " VARCHAR(36) PRIMARY KEY, "
-                                + serverName + " DOUBLE DEFAULT 0 NOT NULL ," + playerName + " VARCHAR(16))");
-                createStatement.executeUpdate();
-                debug("Tables created! Mysql is setup!");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    	try (Connection conn = sql.getConnection()) {
+    		conn.setAutoCommit(false);
+        	try (PreparedStatement stmt = conn.prepareStatement("SHOW TABLES LIKE '" + sql.table + "'");
+        			ResultSet result = stmt.executeQuery()) {
+
+        		if (result.next()) {
+        			// Alter existing tables
+        			List<String> cNames;
+    				try (PreparedStatement columnStatement = conn.prepareStatement(
+    						"SHOW COLUMNS FROM " + sql.table);
+    						ResultSet columns = columnStatement.executeQuery()) {
+    					cNames = new ArrayList<>();
+    					while (columns.next()) {
+    						String name = columns.getString(1);
+    						cNames.add(name);
+    					}
+    				}
+    				if (!cNames.contains(serverName)) {
+                        try (PreparedStatement insert = sql.getConnection()
+                                .prepareStatement("ALTER TABLE " + sql.table + " ADD " + serverName + " DOUBLE DEFAULT 0 NOT NULL")) {
+                        	insert.executeUpdate();
+                        }
+                        debug("Added missing column " + serverName);
+                    }
+                    if (!cNames.contains(playerName)) {
+                        try (PreparedStatement insert = sql.getConnection()
+                                .prepareStatement("ALTER TABLE " + sql.table + " ADD " + playerName + " VARCHAR(16)")) {
+                        	insert.executeUpdate();
+                        }
+                        debug("Added missing column " + playerName);
+                    }
+        		} else {
+        			// Tables do not exist; create them
+        			try (PreparedStatement createStatement = conn.prepareStatement(
+        					"CREATE TABLE " + sql.table + " (" + uuid + " VARCHAR(36) PRIMARY KEY, "
+                            + serverName + " DOUBLE DEFAULT 0 NOT NULL ," + playerName + " VARCHAR(16))")) {
+        				createStatement.executeUpdate();
+        			}
+                    debug("Tables created! Mysql is setup!");
+        		}
+        		conn.commit();
+        	} catch (SQLException ex) {
+        		ex.printStackTrace();
+        		conn.rollback();
+        	} finally {
+        		conn.setAutoCommit(true);
+        	}
+    	} catch (SQLException ex) {
+			ex.printStackTrace();
+		}
     }
 
     //Check if a player exists
     public boolean playerExists(UUID id) {
-        try {
-            PreparedStatement statement = sql.getConnection()
-                    .prepareStatement("SELECT * FROM " + sql.table + " WHERE " + uuid + "=?");
-            statement.setString(1, id.toString());
-            ResultSet results = statement.executeQuery();
-            boolean exists = results.next();
-            if (exists)
-                debug("Player exists!");
-            else
-                debug("Player DOES NOT exists!");
-            return exists;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    	try (Connection conn = sql.getConnection(); PreparedStatement statement = conn.prepareStatement("SELECT * FROM " + sql.table + " WHERE " + uuid + " = ?")) {
+    		statement.setString(1, id.toString());
+    		try (ResultSet results = statement.executeQuery()) {
+    			if (results.next()) {
+    				debug("Player exists!");
+    				return true;
+    			} else {
+    				debug("Player DOES NOT exists!");
+    				return false;
+    			}
+    		}
+    	} catch (SQLException ex) {
+			ex.printStackTrace();
+		}
         return false;
     }
 

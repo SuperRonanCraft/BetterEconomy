@@ -13,23 +13,23 @@ import java.util.Map;
 
 public class FileBasics {
 
-    List<FILETYPE> types = new ArrayList<>();
+    List<FileType> types = new ArrayList<>();
 
     void load() {
         types.clear();
-        for (FILETYPE type : FILETYPE.values()) {
+        for (FileType type : FileType.values()) {
             type.load();
             types.add(type);
         }
     }
 
-    public enum FILETYPE {
+    public enum FileType {
         CONFIG("config");
 
         private String fileName;
         private YamlConfiguration config = new YamlConfiguration();
 
-        FILETYPE(String str) {
+        FileType(String str) {
             this.fileName = str + ".yml";
         }
 

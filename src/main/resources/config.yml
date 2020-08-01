@@ -10,6 +10,7 @@ Format:
 Database:
   Server: 'Lobby'
   ForceUpdate: true #Update local players once their balances update
+  PoolSize: 2
   MySQL:
     host: 'localhost'
     port: 3306

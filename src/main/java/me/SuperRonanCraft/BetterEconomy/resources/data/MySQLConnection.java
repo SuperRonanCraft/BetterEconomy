@@ -1,61 +1,50 @@
 package me.SuperRonanCraft.BetterEconomy.resources.data;
 
-import me.SuperRonanCraft.BetterEconomy.resources.files.FileBasics.FILETYPE;
+import me.SuperRonanCraft.BetterEconomy.resources.files.FileBasics.FileType;
 import me.SuperRonanCraft.BetterEconomy.BetterEconomy;
-import org.bukkit.scheduler.BukkitScheduler;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.SQLException;
+
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 
 public class MySQLConnection {
 
-    //MySQL Config
-    private Connection connection;
-    String host, database, username, table;
-    private String password;
-    private int port;
-    private BukkitScheduler mysqlTimer;
+	String table;
+    private HikariDataSource dataSource;
 
-    public void load(FILETYPE sql) {
+    public void load(FileType sql) {
         setup(sql);
     }
 
-    private void setup(FILETYPE sql) {
+    private void setup(FileType sql) {
         String pre = "Database.MySQL.";
+        String host, database, username, password;
         host = sql.getString(pre + "host");
-        port = sql.getInt(pre + "port");
+        int port = sql.getInt(pre + "port");
         database = sql.getString(pre + "database");
         username = sql.getString(pre + "username");
         password = sql.getString(pre + "password");
+        int poolSize = sql.getInt("Database.PoolSize");
         table = sql.getString(pre + "tablePrefix") + "data";
-        connect();
-    }
-
-    private void connect() {
+        HikariConfig hikariConf = new HikariConfig();
+        hikariConf.setJdbcUrl("jdbc:mysql://" + host + ':' + port + '/' + database);
+        hikariConf.setUsername(username);
+        hikariConf.setPassword(password);
+        hikariConf.setMinimumIdle(poolSize);
+        hikariConf.setMaximumPoolSize(poolSize);
         try {
-            synchronized (this) {
-                if (getConnection() != null && !getConnection().isClosed()) {
-                    getConnection().close();
-                    debug("MySQL Disconnected!");
-                    //return;
-                }
-                //Pure magic
-                Class.forName("com.mysql.jdbc.Driver");
-                setConnection(DriverManager.getConnection("jdbc:mysql://" + this.host + ":" + this.port + "/"
-                        + this.database, this.username, this.password));
-                debug("MySQL Connected!");
-            }
-        } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
-            debug("Mhh... Seems like the mysql isn't setup correctly, can you fix me in the config.yml for [BetterEconomy] <3");
-        }
+			Class.forName("com.mysql.jdbc.Driver");
+		} catch (ClassNotFoundException ex) {
+			ex.printStackTrace();
+			debug("Mhh... Seems like the mysql isn't setup correctly, can you fix me in the config.yml for [BetterEconomy] <3");
+		}
+        dataSource = new HikariDataSource(hikariConf);
     }
 
-    Connection getConnection() {
-        return connection;
-    }
-
-    void setConnection(Connection connection) {
-        this.connection = connection;
+    Connection getConnection() throws SQLException {
+        return dataSource.getConnection();
     }
 
     private void debug(String msg) {
