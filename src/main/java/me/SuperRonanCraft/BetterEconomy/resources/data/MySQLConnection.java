@@ -28,23 +28,25 @@ public class MySQLConnection {
         password = sql.getString(pre + "password");
         int poolSize = sql.getInt("Database.PoolSize");
         table = sql.getString(pre + "tablePrefix") + "data";
-        HikariConfig hikariConf = new HikariConfig();
-        hikariConf.setJdbcUrl("jdbc:mysql://" + host + ':' + port + '/' + database);
-        hikariConf.setUsername(username);
-        hikariConf.setPassword(password);
-        hikariConf.setMinimumIdle(poolSize);
-        hikariConf.setMaximumPoolSize(poolSize);
-        try {
+        HikariConfig hConfig = new HikariConfig();
+        hConfig.setJdbcUrl("jdbc:mysql://" + host + ':' + port + '/' + database);
+        hConfig.setUsername(username);
+        hConfig.setPassword(password);
+        hConfig.setMinimumIdle(poolSize);
+        hConfig.setMaximumPoolSize(poolSize);
+        /*try {
 			Class.forName("com.mysql.jdbc.Driver");
 		} catch (ClassNotFoundException ex) {
 			ex.printStackTrace();
 			debug("Mhh... Seems like the mysql isn't setup correctly, can you fix me in the config.yml for [BetterEconomy] <3");
-		}
-        dataSource = new HikariDataSource(hikariConf);
+		}*/
+        dataSource = new HikariDataSource(hConfig);
     }
 
     Connection getConnection() throws SQLException {
-        return dataSource.getConnection();
+        synchronized (this) {
+            return dataSource.getConnection();
+        }
     }
 
     private void debug(String msg) {

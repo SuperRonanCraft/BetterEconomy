@@ -39,15 +39,14 @@ public class Database {
 
     //MYSQL Setup
     private void createColumns() {
-    	try (Connection conn = sql.getConnection()) {
-    		conn.setAutoCommit(false);
-        	try (PreparedStatement stmt = conn.prepareStatement("SHOW TABLES LIKE '" + sql.table + "'");
-        			ResultSet result = stmt.executeQuery()) {
-
-        		if (result.next()) {
+    	try (Connection connection = sql.getConnection()) {
+            connection.setAutoCommit(false);
+        	try (PreparedStatement stmt = connection.prepareStatement("SHOW TABLES LIKE '" + sql.table + "'");
+                 ResultSet result = stmt.executeQuery()) {
+        	    if (result.next()) {
         			// Alter existing tables
         			List<String> cNames;
-    				try (PreparedStatement columnStatement = conn.prepareStatement(
+    				try (PreparedStatement columnStatement = connection.prepareStatement(
     						"SHOW COLUMNS FROM " + sql.table);
     						ResultSet columns = columnStatement.executeQuery()) {
     					cNames = new ArrayList<>();
@@ -72,19 +71,20 @@ public class Database {
                     }
         		} else {
         			// Tables do not exist; create them
-        			try (PreparedStatement createStatement = conn.prepareStatement(
+        			try (PreparedStatement createStatement = connection.prepareStatement(
         					"CREATE TABLE " + sql.table + " (" + uuid + " VARCHAR(36) PRIMARY KEY, "
                             + serverName + " DOUBLE DEFAULT 0 NOT NULL ," + playerName + " VARCHAR(16))")) {
         				createStatement.executeUpdate();
         			}
                     debug("Tables created! Mysql is setup!");
         		}
-        		conn.commit();
+                connection.commit();
         	} catch (SQLException ex) {
         		ex.printStackTrace();
-        		conn.rollback();
+                connection.rollback();
         	} finally {
-        		conn.setAutoCommit(true);
+                connection.setAutoCommit(true);
+                connection.close();
         	}
     	} catch (SQLException ex) {
 			ex.printStackTrace();
@@ -93,8 +93,12 @@ public class Database {
 
     //Check if a player exists
     public boolean playerExists(UUID id) {
-    	try (Connection conn = sql.getConnection(); PreparedStatement statement = conn.prepareStatement("SELECT * FROM " + sql.table + " WHERE " + uuid + " = ?")) {
+    	try {
+            Connection connection = sql.getConnection();
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM " + sql.table + " WHERE " + uuid + " = ?");
     		statement.setString(1, id.toString());
+            statement.close();
+            connection.close();
     		try (ResultSet results = statement.executeQuery()) {
     			if (results.next()) {
     				debug("Player exists!");
@@ -114,13 +118,16 @@ public class Database {
     public boolean playerCreate(final UUID id, Player p, double def) {
         try {
             if (!playerExists(id)) {
-                PreparedStatement insert = sql.getConnection()
+                Connection connection = sql.getConnection();
+                PreparedStatement statement = connection
                         .prepareStatement("INSERT INTO " + sql.table + "(" + uuid + "," + playerName +"," + serverName + ")" +
                                 "VALUE (?,?,?)");
-                insert.setString(1, id.toString());
-                insert.setString(2, p.getName());
-                insert.setDouble(3, def);
-                insert.executeUpdate();
+                statement.setString(1, id.toString());
+                statement.setString(2, p.getName());
+                statement.setDouble(3, def);
+                statement.executeUpdate();
+                statement.close();
+                connection.close();
                 debug("Player inserted into Database!");
                 return true;
             } else
@@ -134,17 +141,18 @@ public class Database {
     //Get a players balance
     public double playerBalance(final UUID id) {
         try {
-            PreparedStatement statement = sql.getConnection()
+            Connection connection = sql.getConnection();
+            PreparedStatement statement = connection
                     .prepareStatement("SELECT * FROM " + sql.table + " WHERE " + uuid + "=?");
             statement.setString(1, id.toString());
             ResultSet results = statement.executeQuery();
+            statement.close();
+            connection.close();
             if (results.next()) {
                 debug("Grabbed players balance!");
                 return results.getDouble(serverName);
-            } else {
+            } else
                 debug("Could not Grab players balance?");
-                return -1.0;
-            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -157,14 +165,17 @@ public class Database {
             String updateWithName = "UPDATE " + sql.table +  " SET " + serverName + "=?, " + playerName + "=? WHERE " + uuid + "=?";
             String updateWithoutName = "UPDATE " + sql.table +  " SET " + serverName + "=? WHERE " + uuid + "=?";
             String name = Bukkit.getOfflinePlayer(id).getName();
-            PreparedStatement insert = sql.getConnection().prepareStatement(name != null ? updateWithName : updateWithoutName);
-            insert.setDouble(1, amt);
+            Connection connection = sql.getConnection();
+            PreparedStatement statement = connection.prepareStatement(name != null ? updateWithName : updateWithoutName);
+            statement.setDouble(1, amt);
             if (name != null) {
-                insert.setString(2, name);
-                insert.setString(3, id.toString());
+                statement.setString(2, name);
+                statement.setString(3, id.toString());
             } else
-                insert.setString(2, id.toString());
-            insert.executeUpdate();
+                statement.setString(2, id.toString());
+            statement.executeUpdate();
+            statement.close();
+            connection.close();
             debug("Player updated in Database!");
         } catch (SQLException e) {
             e.printStackTrace();
@@ -174,10 +185,13 @@ public class Database {
     //Add to Balance
     public boolean playerAddBalance(final UUID id, double amt) {
         try {
-            PreparedStatement insert = sql.getConnection().prepareStatement("UPDATE " + sql.table + " SET " + serverName + "=" + serverName + "+? WHERE " + uuid + "=?");
-            insert.setDouble(1, amt);
-            insert.setString(2, id.toString());
-            insert.executeUpdate();
+            Connection connection = sql.getConnection();
+            PreparedStatement statement = connection.prepareStatement("UPDATE " + sql.table + " SET " + serverName + "=" + serverName + "+? WHERE " + uuid + "=?");
+            statement.setDouble(1, amt);
+            statement.setString(2, id.toString());
+            statement.executeUpdate();
+            statement.close();
+            connection.close();
             debug("Player updated in Database!");
             return true;
         } catch (SQLException e) {
@@ -190,7 +204,8 @@ public class Database {
     public List<DatabasePlayer> getTop(int amt) {
         try {
             debug("Grabbing top players...");
-            PreparedStatement statement = sql.getConnection()
+            Connection connection = sql.getConnection();
+            PreparedStatement statement = connection
                     .prepareStatement("SELECT * FROM " + sql.table + " ORDER BY " + serverName + " DESC LIMIT ?");
             statement.setInt(1, amt);
             ResultSet result = statement.executeQuery();
@@ -202,6 +217,8 @@ public class Database {
                 list.add(new DatabasePlayer(name, id, bal));
             }
             debug("Grabbed " + list.size() + " top players!");
+            statement.close();
+            connection.close();
             return list;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -214,7 +231,8 @@ public class Database {
         List<DatabasePlayer> list = new ArrayList<>();
         try {
             debug("Grabbing similar players...");
-            PreparedStatement statement = sql.getConnection()
+            Connection connection = sql.getConnection();
+            PreparedStatement statement = connection
                     .prepareStatement("SELECT * FROM " + sql.table + " WHERE " + playerName + " LIKE ?");
             statement.setString(1, "%" + name + "%");
             ResultSet result = statement.executeQuery();
@@ -230,6 +248,8 @@ public class Database {
                     break;
                 }
             }
+            statement.close();
+            connection.close();
             debug("Grabbed " + list.size() + " similar players!");
         } catch (SQLException e) {
             e.printStackTrace();
