@@ -43,6 +43,11 @@ public class Permissions {
         return perm(pre + "remove", sendi);
     }
 
+    //Updater
+    public boolean getUpdate(CommandSender sendi) {
+        return perm(pre + "update", sendi);
+    }
+
 //PROCESSING
     private boolean perm(String str, CommandSender sendi) {
         return perm.hasPerm(str, sendi);

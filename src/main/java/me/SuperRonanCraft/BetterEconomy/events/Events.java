@@ -1,6 +1,7 @@
 package me.SuperRonanCraft.BetterEconomy.events;
 
 import me.SuperRonanCraft.BetterEconomy.BetterEconomy;
+import me.SuperRonanCraft.BetterEconomy.web.Updater;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -20,6 +21,15 @@ public class Events implements Listener {
     @EventHandler
     private void onJoin(PlayerJoinEvent e) {
         loadPlayer(e.getPlayer());
+        update(e);
+    }
+
+    public void update(PlayerJoinEvent e) {
+        Player player = e.getPlayer();
+        if (getPl().getPerms().getUpdate(player))
+            if (Updater.updatedVersion != null && !getPl().getDescription().getVersion().equals(Updater.updatedVersion))
+                getPl().getMessages().sms(player, "&7There is currently an update for &6BetterEconony &7version &e#" +
+                        Updater.updatedVersion + " &7you have version &e#" + getPl().getDescription().getVersion());
     }
 
     public void loadPlayer(Player p) {
