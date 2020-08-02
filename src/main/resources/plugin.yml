@@ -1,6 +1,6 @@
 name: BetterEconomy
 main: me.SuperRonanCraft.BetterEconomy.BetterEconomy
-version: '1.0.1'
+version: '1.0.2'
 api-version: '1.13'
 author: SuperRonanCraft
 depend: [Vault]
@@ -23,5 +23,7 @@ permissions:
     description: Pay one or more players
   bettereconomy.bal.other:
     description: Get balance of other
+  bettereconomy.update:
+    description: Get an update notification on join
   bettereconomy.reload:
     description: Reload plugin

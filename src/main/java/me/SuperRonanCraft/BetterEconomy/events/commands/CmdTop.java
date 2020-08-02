@@ -16,7 +16,7 @@ import java.util.UUID;
 
 public class CmdTop implements EconomyCommand, EconomyCommandHelpable {
 
-    private List<String> cacheTop = new ArrayList<>();
+    private List<DatabasePlayer> cachePlayers = new ArrayList<>();
     private long cooldownGoal = 0;
     private final int max, cooldown;
 
@@ -27,32 +27,37 @@ public class CmdTop implements EconomyCommand, EconomyCommandHelpable {
 
     @Override //Coins top
     public void execute(CommandSender sendi, String label, String[] args) {
-        List<String> message;
-        if (cooldownGoal != 0 && System.currentTimeMillis() > cooldownGoal)
-            cacheTop.clear();
-        if (cacheTop.isEmpty()) {
-            message = new ArrayList<>();
+        List<String> message = new ArrayList<>();
+        List<DatabasePlayer> topPlayers = getTopPlayers(); //Grab players
+        if (!topPlayers.isEmpty()) {
+            //Prefix
             String prefix = getPl().getMessages().listTopPrefix(String.valueOf(max));
             message.add(prefix);
-            List<DatabasePlayer> topPlayers = getPl().getDatabase().getTop(max);
+            //Prefix
             int index = 0;
-            if (topPlayers != null) {
-                for (DatabasePlayer pInfo : topPlayers) {
-                    //0 = index, 1 = player, 2 = balance
-                    index++;
-                    message.add(getPl().getMessages().listTopPlayer(String.valueOf(index), pInfo.name, String.valueOf(pInfo.balance)));
-                }
-                if (topPlayers.isEmpty())
-                    message.add(getPl().getMessages().listTopNone());
+            for (DatabasePlayer pInfo : topPlayers) {
+                //0 = index, 1 = player, 2 = balance
+                index++;
+                message.add(getPl().getMessages().listTopPlayer(String.valueOf(index), pInfo.name, String.valueOf(pInfo.balance)));
             }
-            cacheTop = message;
+        } else
+            message.add(getPl().getMessages().listTopNone());
+        getPl().getMessages().sms(sendi, message);
+    }
+
+    public List<DatabasePlayer> getTopPlayers() {
+        if (cooldownGoal != 0 && System.currentTimeMillis() > cooldownGoal) { //Reset cache
+            cachePlayers.clear();
+            cooldownGoal = 0;
+        }
+        if (cooldownGoal == 0) { //Grab players and force cooldown
+            cachePlayers = getPl().getDatabase().getTop(max);
             cooldownGoal = System.currentTimeMillis() + (cooldown * 1000);
-        } else {
-            message = cacheTop;
+        } else { //Debugging
             long waiting = (cooldownGoal - System.currentTimeMillis()) / 1000;
             debug("Top list shown from cache! Waiting " + waiting + " more seconds");
         }
-        getPl().getMessages().sms(sendi, message);
+        return cachePlayers;
     }
 
     @Override

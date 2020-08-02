@@ -1,5 +1,6 @@
 Language-File: 'en.yml'
 Debug: false
+Updater: true
 Top:
   Amount: 10 #How many players should we show in '/coins top'
   Cooldown: 300 #Cooldown in seconds

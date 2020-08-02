@@ -4,12 +4,11 @@ import me.SuperRonanCraft.BetterEconomy.BetterEconomy;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import java.io.File;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 public class FileBasics {
 
@@ -83,19 +82,32 @@ public class FileBasics {
         private void load() {
             BetterEconomy pl = BetterEconomy.getInstance();
             File file = new File(pl.getDataFolder(), fileName);
-            if (!file.exists())
+            if (!file.exists()) {
                 pl.saveResource(fileName, false);
-            try {
-                config.load(file);
-                final InputStream defConfigStream = pl.getResource(fileName);
-                if (defConfigStream != null) {
-                    config.setDefaults(YamlConfiguration.loadConfiguration(new InputStreamReader(defConfigStream)));
-                    config.options().copyDefaults(true);
+                try {
+                    InputStream in = pl.getResource(fileName);
+                    OutputStream out = new FileOutputStream(file);
+                    byte[] buf = new byte[1024];
+                    int len;
+                    while ((len = in.read(buf)) > 0)
+                        out.write(buf, 0, len);
+                    out.close();
+                    in.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                config.save(file);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            } else
+                try {
+                    config.load(file);
+                    final InputStream defConfigStream = pl.getResource(fileName);
+                    if (defConfigStream != null) {
+                        config.setDefaults(YamlConfiguration.loadConfiguration(new InputStreamReader(defConfigStream)));
+                        config.options().copyDefaults(true);
+                    }
+                    config.save(file);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
         }
     }
 }

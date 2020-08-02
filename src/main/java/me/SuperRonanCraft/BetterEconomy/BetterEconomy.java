@@ -30,7 +30,6 @@ public class BetterEconomy extends JavaPlugin {
     private final Permissions perms = new Permissions();
     private final Database database = new Database();
     private final Systems systems = new Systems();
-    private DependsPlaceholders ph = null;
     //Settings
     private boolean debug = false;
 
@@ -50,17 +49,12 @@ public class BetterEconomy extends JavaPlugin {
         economyImplementer.load(); //Reset cache if any
         database.load(); //Reset cache and connect to database
         events.load(reload); //Event Listener
-        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-            if (ph == null)
-                ph = new DependsPlaceholders();
-            ph.register();
-            debug("Placeholder API registered");
-        }
     }
 
     @Override
     public void onDisable() {
         vaultHook.unhook();
+        database.unload();
     }
 
     @Override

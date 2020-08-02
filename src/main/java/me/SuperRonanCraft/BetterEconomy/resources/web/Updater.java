@@ -1,7 +1,6 @@
-package me.SuperRonanCraft.BetterEconomy.web;
+package me.SuperRonanCraft.BetterEconomy.resources.web;
 
 import me.SuperRonanCraft.BetterEconomy.BetterEconomy;
-import org.bukkit.Bukkit;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -12,7 +11,8 @@ public class Updater {
 
     public static String updatedVersion;
 
-    public Updater(BetterEconomy pl) {
+    public Updater() {
+        BetterEconomy pl = BetterEconomy.getInstance();
         try {
             URLConnection con = new URL(getUrl() + project()).openConnection();
             updatedVersion = new BufferedReader(new InputStreamReader(con.getInputStream())).readLine();
