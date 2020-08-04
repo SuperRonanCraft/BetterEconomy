@@ -12,7 +12,7 @@ public interface EconomyCommandDoubleGrab { //Grab a double based off of argumen
     default Double getDouble(CommandSender sendi, String arg) throws NumberFormatException {
         String num = arg.replaceAll("[^0-9]", "");
         double amt = Double.parseDouble(num);
-        if (arg.substring(arg.length() - 1, arg.length()).equalsIgnoreCase("k"))
+        if (arg.substring(arg.length() - 1).equalsIgnoreCase("k"))
             amt *= 1000;
         return amt;
     }

@@ -8,6 +8,8 @@ import me.SuperRonanCraft.BetterEconomy.BetterEconomy;
 import java.net.ConnectException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -37,9 +39,12 @@ public class MySQLConnection {
         hConfig.setPassword(password);
         hConfig.setMinimumIdle(poolSize);
         hConfig.setMaximumPoolSize(poolSize);
+        //System.out.println(HikariDataSource.class.toString().replace("class ", ""));
+        Logger.getLogger(HikariDataSource.class.toString().replace("class ", "")).setLevel(Level.SEVERE);
         try {
             dataSource = new HikariDataSource(hConfig);
             debug("MySQL connection successful!");
+            Logger.getLogger(HikariDataSource.class.toString().replace("class ", "")).setLevel(Level.INFO);
         } catch (HikariPool.PoolInitializationException e) {
             BetterEconomy.getInstance().getLogger().severe("Mhh... Seems like the mysql isn't setup correctly, can you fix me in the config.yml for [BetterEconomy] <3");
         }

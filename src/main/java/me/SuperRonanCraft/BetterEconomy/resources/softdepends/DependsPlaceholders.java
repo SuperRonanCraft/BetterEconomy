@@ -36,12 +36,21 @@ public class DependsPlaceholders extends PlaceholderExpansion {
     public String onPlaceholderRequest(Player player, String s) {
         if (s.equalsIgnoreCase("balance"))
             return String.valueOf(getPl().getEconomy().getBalance(player));
-        if (s.toLowerCase().startsWith("top") && s.contains("_")) {
+        else if (s.toLowerCase().startsWith("top_player_")) {
             try {
-                int topNum = Integer.parseInt(s.split("_")[1]);
+                int topNum = Integer.parseInt(s.split("top_player_")[1]);
                 List<DatabasePlayer> players = ((CmdTop) EconomyCommandTypes.TOP.get()).getTopPlayers();
                 if (players.size() >= topNum)
                     return players.get(topNum - 1).name;
+            } catch (ArrayIndexOutOfBoundsException e) {
+                return null;
+            }
+        } else if (s.toLowerCase().startsWith("top_bal_")) {
+            try {
+                int topNum = Integer.parseInt(s.split("top_bal_")[1]);
+                List<DatabasePlayer> players = ((CmdTop) EconomyCommandTypes.TOP.get()).getTopPlayers();
+                if (players.size() >= topNum)
+                    return String.valueOf(players.get(topNum - 1).balance);
             } catch (ArrayIndexOutOfBoundsException e) {
                 return null;
             }

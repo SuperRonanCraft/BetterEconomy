@@ -16,6 +16,8 @@ public class CmdPay implements EconomyCommand, EconomyCommandHelpable, EconomyCo
             double amt;
             try {
                 amt = getDouble(sendi, args[2]);
+                if (amt == 0)
+                    throw new NullPointerException();
             } catch (NumberFormatException e) {
                 getPl().getMessages().getFailNumber(sendi);
                 return;

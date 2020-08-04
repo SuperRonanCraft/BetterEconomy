@@ -9,9 +9,9 @@ Format:
   Single: 'Coin'
   Plural: 'Coins'
 Database:
-  Server: 'Lobby'
+  Server: 'Lobby' #Name of bungee-sub server (keep the same to sync economies)
   ForceUpdate: true #Update local players once their balances update
-  PoolSize: 2
+  PoolSize: 2 #Amount of connections to allow at one time
   MySQL:
     host: 'localhost'
     port: 3306
