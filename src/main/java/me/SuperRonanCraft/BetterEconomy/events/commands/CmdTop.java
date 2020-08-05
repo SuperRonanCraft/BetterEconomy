@@ -2,26 +2,20 @@ package me.SuperRonanCraft.BetterEconomy.events.commands;
 
 import me.SuperRonanCraft.BetterEconomy.resources.data.DatabasePlayer;
 import me.SuperRonanCraft.BetterEconomy.resources.files.FileBasics;
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
 
 public class CmdTop implements EconomyCommand, EconomyCommandHelpable {
 
     private List<DatabasePlayer> cachePlayers = new ArrayList<>();
     private long cooldownGoal = 0;
-    private final int max, cooldown;
+    public final int maxTopPlayers;
+    private final int cooldown;
 
     CmdTop() {
-        max = getPl().getFiles().getType(FileBasics.FileType.CONFIG).getInt("Top.Amount"); //Max amount of top players
+        maxTopPlayers = getPl().getFiles().getType(FileBasics.FileType.CONFIG).getInt("Top.Amount"); //Max amount of top players
         cooldown = getPl().getFiles().getType(FileBasics.FileType.CONFIG).getInt("Top.Cooldown"); //In Minutes
     }
 
@@ -31,7 +25,7 @@ public class CmdTop implements EconomyCommand, EconomyCommandHelpable {
         List<DatabasePlayer> topPlayers = getTopPlayers(); //Grab players
         if (!topPlayers.isEmpty()) {
             //Prefix
-            String prefix = getPl().getMessages().listTopPrefix(String.valueOf(max));
+            String prefix = getPl().getMessages().listTopPrefix(String.valueOf(maxTopPlayers));
             message.add(prefix);
             //Prefix
             int index = 0;
@@ -51,7 +45,7 @@ public class CmdTop implements EconomyCommand, EconomyCommandHelpable {
             cooldownGoal = 0;
         }
         if (cooldownGoal == 0) { //Grab players and force cooldown
-            cachePlayers = getPl().getDatabase().getTop(max);
+            cachePlayers = getPl().getDatabase().getTop(maxTopPlayers);
             cooldownGoal = System.currentTimeMillis() + (cooldown * 1000);
         } else { //Debugging
             long waiting = (cooldownGoal - System.currentTimeMillis()) / 1000;

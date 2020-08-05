@@ -32,8 +32,10 @@ public class CmdSet implements EconomyCommand, EconomyCommandHelpable, EconomyCo
             getPl().getMessages().getSuccessSet(sendi, p.getName(), String.valueOf(getPl().getEconomy().getBalance(p)));
         } else { //Look on the mysql
             DatabasePlayer pInfo = getPl().getSystems().getDatabasePlayer(sendi, args[1]);
-            if (pInfo != null) //Only one player found
+            if (pInfo != null) { //Only one player found
                 getPl().getDatabase().playerSetBalance(pInfo.id, amt);
+                getPl().getMessages().getSuccessSet(sendi, pInfo.name, String.valueOf(amt));
+            }
         }
     }
 

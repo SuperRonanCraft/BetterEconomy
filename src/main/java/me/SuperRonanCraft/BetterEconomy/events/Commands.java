@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +26,12 @@ public class Commands {
                 if (type.name().equalsIgnoreCase(args[0])) //Argument
                     if (type.get().hasPerm(sendi)) //Permission to run
                         if (sendi instanceof Player || type.get().allowConsole()) { //Is a player, or console is allowed
-                            type.get().execute(sendi, label, args);
+                            new BukkitRunnable() {
+                                @Override
+                                public void run() {
+                                    type.get().execute(sendi, label, args);
+                                }
+                            }.runTaskAsynchronously(BetterEconomy.getInstance());
                             return;
                         } else {
                             getPl().getMessages().errorConsole(label);

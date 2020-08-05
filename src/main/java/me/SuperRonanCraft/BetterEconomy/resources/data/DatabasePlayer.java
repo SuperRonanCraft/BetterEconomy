@@ -7,7 +7,7 @@ public class DatabasePlayer {
     public UUID id;
     public double balance;
 
-    DatabasePlayer(String name, UUID id, double balance) {
+    public DatabasePlayer(String name, UUID id, double balance) {
         this.name = name;
         this.id = id;
         this.balance = balance;
