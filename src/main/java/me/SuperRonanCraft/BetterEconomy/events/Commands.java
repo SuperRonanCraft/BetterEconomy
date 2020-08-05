@@ -26,12 +26,15 @@ public class Commands {
                 if (type.name().equalsIgnoreCase(args[0])) //Argument
                     if (type.get().hasPerm(sendi)) //Permission to run
                         if (sendi instanceof Player || type.get().allowConsole()) { //Is a player, or console is allowed
-                            new BukkitRunnable() {
-                                @Override
-                                public void run() {
-                                    type.get().execute(sendi, label, args);
-                                }
-                            }.runTaskAsynchronously(BetterEconomy.getInstance());
+                            if (type.sync) { //Run Synchronous
+                                new BukkitRunnable() {
+                                    @Override
+                                    public void run() {
+                                        type.get().execute(sendi, label, args);
+                                    }
+                                }.runTaskAsynchronously(BetterEconomy.getInstance());
+                            } else
+                                type.get().execute(sendi, label, args);
                             return;
                         } else {
                             getPl().getMessages().errorConsole(label);
