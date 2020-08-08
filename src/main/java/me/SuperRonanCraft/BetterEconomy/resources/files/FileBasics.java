@@ -93,6 +93,7 @@ public class FileBasics {
                         out.write(buf, 0, len);
                     out.close();
                     in.close();
+                    config.load(file);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -102,7 +103,7 @@ public class FileBasics {
                     final InputStream defConfigStream = pl.getResource(fileName);
                     if (defConfigStream != null) {
                         config.setDefaults(YamlConfiguration.loadConfiguration(new InputStreamReader(defConfigStream)));
-                        config.options().copyDefaults(true);
+                        config.options().copyDefaults(false);
                     }
                     config.save(file);
                 } catch (Exception e) {
