@@ -91,11 +91,13 @@ public class DatabaseFile implements BetterEcoDatabase {
         }
         List<DatabasePlayer> topPlayers = new ArrayList<>();
         for (int i = 0; i < amt; i++) {
+            topPlayers.add(null);
             for (DatabasePlayer p : players) {
-                if (topPlayers.get(i) == null)
-                    topPlayers.set(i, p);
-                else if (p.balance > topPlayers.get(i).balance)
-                    topPlayers.set(i, p);
+                if (!topPlayers.contains(p))
+                    if (topPlayers.get(i) == null)
+                        topPlayers.set(i, p);
+                    else if (p.balance > topPlayers.get(i).balance)
+                        topPlayers.set(i, p);
             }
         }
         return topPlayers;

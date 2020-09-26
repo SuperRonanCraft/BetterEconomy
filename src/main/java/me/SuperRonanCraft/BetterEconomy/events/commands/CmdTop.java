@@ -32,7 +32,8 @@ public class CmdTop implements EconomyCommand, EconomyCommandHelpable {
             for (DatabasePlayer pInfo : topPlayers) {
                 //0 = index, 1 = player, 2 = balance
                 index++;
-                message.add(getPl().getMessages().listTopPlayer(String.valueOf(index), pInfo.name, String.valueOf(pInfo.balance)));
+                if (pInfo != null)
+                    message.add(getPl().getMessages().listTopPlayer(String.valueOf(index), pInfo.name, String.valueOf(pInfo.balance)));
             }
         } else
             message.add(getPl().getMessages().listTopNone());
