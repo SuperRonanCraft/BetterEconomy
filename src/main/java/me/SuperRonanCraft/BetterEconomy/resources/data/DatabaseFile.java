@@ -12,8 +12,8 @@ import java.util.UUID;
 
 public class DatabaseFile implements BetterEcoDatabase {
     private final Database db;
-    private FileDatabase database = new FileDatabase();
-    private String bal = "Balance";
+    private final FileDatabase database = new FileDatabase();
+    private final String bal = "Balance";
 
     DatabaseFile(Database db) {
         this.db = db;
@@ -42,9 +42,10 @@ public class DatabaseFile implements BetterEcoDatabase {
         if (!data.isConfigurationSection(section)) {
             data.set(section + "." + db.playerName, p.getName());
             data.set(section + "." + bal, def);
+            database.saveDatabase(data);
+            return true;
         }
-        database.saveDatabase(data);
-        return true;
+        return false;
     }
 
     //Get a players balance
